@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continental Battery Systems - B2B Portal Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #c8102e;
+            --dark-header: #1c1d1f;
+            --nav-bg: #2b2c2e;
+            --brand-yellow: #ffc20e;
+            --border-color: #dcdcdc;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --light-bg: #f9f9f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f4f4f6;
+            color: var(--text-main);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Top Header Area */
+        .site-header {
+            background-color: var(--dark-header);
+            color: #fff;
+            padding: 15px 0 0 0;
+        }
+
+        .header-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px 15px 20px;
+        }
+
+        .logo-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-decoration: none;
+        }
+
+        .logo-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .logo-subtitle {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .b2b-badge {
+            background-color: var(--brand-yellow);
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 2px 12px;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .header-search {
+            flex: 0 1 520px;
+            display: flex;
+        }
+
+        .header-search input {
+            width: 100%;
+            padding: 9px 14px;
+            font-size: 13px;
+            border: 1px solid #444;
+            border-right: none;
+            outline: none;
+            background: #fff;
+        }
+
+        .header-search button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 0 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .header-search button:hover {
+            background-color: var(--primary-red);
+        }
+
+        .header-user-nav {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .header-user-nav a {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-user-nav a:hover {
+            color: var(--brand-yellow);
+        }
+
+        /* Navigation Bar */
+        .primary-nav {
+            background-color: var(--nav-bg);
+            border-top: 1px solid #3d3e40;
+        }
+
+        .nav-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 12px 0;
+            display: inline-block;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--brand-yellow);
+        }
+
+        /* Demo Controls Banner */
+        .demo-toolbar {
+            background-color: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            padding: 10px 20px;
+            font-size: 13px;
+            color: #0d47a1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demo-toolbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .demo-toolbar select, .demo-toolbar button {
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px solid #90caf9;
+        }
+
+        /* Main Portal Layout */
+        .portal-wrapper {
+            max-width: 1240px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 25px;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 12px 18px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .sidebar-link:hover {
+            background-color: #fafafa;
+            color: var(--primary-red);
+        }
+
+        .sidebar-link.active {
+            color: var(--primary-red);
+            font-weight: 700;
+            border-left-color: var(--primary-red);
+            background-color: #fff;
+        }
+
+        .badge-new {
+            background-color: var(--primary-red);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        /* Main Content Box */
+        .content-area {
+            flex-grow: 1;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 2px;
+            padding: 30px;
+            min-height: 550px;
+        }
+
+        .page-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #111;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Horizontal Sub-Tabs */
+        .tab-navigation {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 25px;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            background: #f5f5f5;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            background: #e9e9e9;
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: var(--primary-red);
+            border-top: 3px solid var(--primary-red);
+            border-bottom: 2px solid #fff;
+            margin-bottom: -2px;
+        }
+
+        /* Banner Message */
+        .alert-info-box {
+            background-color: #e8f4fd;
+            border-left: 4px solid #1976d2;
+            padding: 14px 18px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #0d47a1;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-info-box i {
+            font-size: 18px;
+            margin-top: 2px;
+            color: #1976d2;
+        }
+
+        /* Toast Messages */
+        .alert-banner {
+            padding: 12px 18px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-danger {
+            background-color: #fde8e8;
+            border: 1px solid #f8b4b4;
+            color: #9b1c1c;
+        }
+
+        .alert-success {
+            background-color: #def7ec;
+            border: 1px solid #84e1bc;
+            color: #03543f;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 22px;
+            max-width: 550px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-label .required {
+            color: var(--primary-red);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .qty-input-wrapper {
+            display: flex;
+            align-items: center;
+            max-width: 160px;
+        }
+
+        .qty-btn {
+            background: #eee;
+            border: 1px solid #ccc;
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .qty-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .qty-input-wrapper input {
+            text-align: center;
+            border-left: none;
+            border-right: none;
+            height: 38px;
+            border-radius: 0;
+            font-weight: 700;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-red);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #a00c23;
+        }
+
+        /* Table Ledger Styles */
+        .ledger-table-container {
+            overflow-x: auto;
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        .ledger-table th {
+            background-color: #f5f5f5;
+            color: #222;
+            font-weight: 700;
+            padding: 12px 14px;
+            border-bottom: 2px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .ledger-table td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        .ledger-table tr:hover td {
+            background-color: #fafafa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .cm-link {
+            color: var(--primary-red);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cm-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Account Details Grid */
+        .account-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .detail-block h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+        }
+
+        /* HIGH-FIDELITY NETSUITE CREDIT MEMO PDF MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #fff;
+            width: 820px;
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: var(--dark-header);
+            color: #fff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-close {
+            color: #fff;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            background: #525659;
+        }
+
+        .pdf-paper {
+            background: #ffffff;
+            width: 100%;
+            padding: 35px 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .pdf-top-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .pdf-brand-logo {
+            font-family: 'Oswald', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #000;
+            line-height: 0.9;
+            letter-spacing: 0.5px;
+        }
+        .pdf-brand-sub {
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #000;
+        }
+
+        .pdf-doc-title {
+            font-size: 20px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .pdf-meta-table {
+            border-collapse: collapse;
+            width: 230px;
+            font-size: 10px;
+            border: 1px solid #777;
+        }
+
+        .pdf-meta-table td {
+            padding: 3px 6px;
+            border: 1px solid #777;
+        }
+
+        .pdf-meta-table td.lbl {
+            background-color: #e6e6e6;
+            font-weight: bold;
+            width: 45%;
+        }
+
+        .pdf-address-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .pdf-address-box {
+            border: 1px solid #777;
+            font-size: 10px;
+            min-height: 75px;
+        }
+
+        .pdf-address-box-header {
+            background-color: #cccccc;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-bottom: 1px solid #777;
+        }
+
+        .pdf-address-box-body {
+            padding: 6px 8px;
+        }
+
+        .pdf-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pdf-items-table th {
+            background-color: #cccccc;
+            border: 1px solid #777;
+            padding: 5px 6px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .pdf-items-table td {
+            border-left: 1px solid #777;
+            border-right: 1px solid #777;
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+
+        .pdf-section-header-row td {
+            font-weight: bold;
+            padding-top: 8px;
+            padding-bottom: 4px;
+        }
+
+        .pdf-subtotal-row td {
+            border-bottom: 1px solid #777;
+            padding-bottom: 8px;
+        }
+
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+
+        .pdf-footer-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 15px;
+        }
+
+        .pdf-signature-block {
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .pdf-signature-line {
+            border-bottom: 1px solid #000;
+            width: 180px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .pdf-totals-table {
+            width: 250px;
+            border-collapse: collapse;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .pdf-totals-table td {
+            padding: 3px 6px;
+        }
+
+        .pdf-totals-table .grand-total {
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="#" class="logo-block">
+                <div class="logo-title">Continental</div>
+                <div class="logo-subtitle">BATTERY SYSTEMS</div>
+                <div class="b2b-badge">B2B PORTAL</div>
+            </a>
+            <div class="header-search">
+                <input type="text" placeholder="Search entire store here...">
+                <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="header-user-nav">
+                <a href="#"><i class="fa-solid fa-user"></i> My Account</a>
+                <a href="#"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+            </div>
+        </div>
+        <nav class="primary-nav">
+            <div class="nav-container">
+                <a href="#" class="nav-link">Batteries</a>
+                <a href="#" class="nav-link">Chargers & Accessories</a>
+                <a href="#" class="nav-link">Catalogs</a>
+                <a href="#" class="nav-link">Who We Are</a>
+                <a href="#" class="nav-link">Locations</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Prototype Interactive Control Switcher -->
+    <div class="demo-toolbar">
+        <div>
+            <strong><i class="fa-solid fa-sliders"></i> Prototype Demo Mode:</strong> 
+            Simulate account scenario:
+        </div>
+        <div class="demo-toolbar-controls">
+            <label for="locationCountToggle">Locations Available:</label>
+            <select id="locationCountToggle" onchange="toggleLocationScenario()">
+                <option value="multi">Multi-Location Company (User selects branch)</option>
+                <option value="single">Single Location Account (Auto-prepopulated)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="portal-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('my-account', this)">My Account</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('my-quotes', this)">My Quotes</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('my-addresses', this)">My Addresses</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('my-profile', this)">My Profile</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('my-orders', this)">My Orders</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('my-invoices', this)">My Invoices</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('reorder-pad', this)">Reorder Pad</a>
+                </li>
+                <!-- NEW PROPOSED FEATURE TAB -->
+                <li class="sidebar-item">
+                    <a href="#" id="core-pickup-tab-link" class="sidebar-link active" onclick="switchMainView('core-pickup-request', this)">
+                        Core Pickup Request <span class="badge-new">NEW</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('company-profile', this)">Company Profile</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('company-structure', this)">Company Structure</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('company-users', this)">Company Users</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" onclick="switchMainView('roles-permissions', this)">Roles and Permissions</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="content-area">
+
+            <!-- VIEW 1: CORE PICKUP REQUEST -->
+            <div id="view-core-pickup-request">
+                <h1 class="page-title">Core Pickup Request</h1>
+
+                <!-- Sub Navigation Tabs -->
+                <div class="tab-navigation">
+                    <button class="tab-btn active" id="btn-tab-form" onclick="switchSubTab('form')">Request Core Pickup</button>
+                    <button class="tab-btn" id="btn-tab-history" onclick="switchSubTab('history')">Core Request History</button>
+                </div>
+
+                <!-- SUB-TAB 1: REQUEST FORM -->
+                <div id="subtab-form-content">
+                    
+                    <div class="alert-info-box">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div>
+                            Please note, your servicing branch will arrive on your regular scheduled delivery date. To request a core pickup, please select how many cores you have, and which location they will be picked up from.
+                        </div>
+                    </div>
+
+                    <div id="form-error-alert" class="alert-banner alert-danger">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <span id="error-alert-text">We require a minimum request of 10 units.</span>
+                    </div>
+
+                    <div id="form-success-alert" class="alert-banner alert-success">
+                        <i class="fa-solid fa-circle-check"></i> Your core pickup request has been successfully submitted! Redirecting to Request History...
+                    </div>
+
+                    <form id="corePickupForm" onsubmit="handleFormSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="locationSelect">
+                                Pickup Location <span class="required">*</span>
+                            </label>
+                            <select id="locationSelect" class="form-control" required></select>
+                            <div class="input-hint">Select the child branch location where core inventory is staged.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="coreQtyInput">
+                                Core Quantity Requested <span class="required">*</span>
+                            </label>
+                            <div class="qty-input-wrapper">
+                                <button type="button" class="qty-btn" onclick="adjustQty(-1)">-</button>
+                                <input type="number" id="coreQtyInput" class="form-control" value="10" min="1" required>
+                                <button type="button" class="qty-btn" onclick="adjustQty(1)">+</button>
+                            </div>
+                            <div class="input-hint">Minimum threshold required: 10 units.</div>
+                        </div>
+
+                        <!-- NEW PO/MEMO FIELD -->
+                        <div class="form-group">
+                            <label class="form-label" for="poMemoInput">
+                                PO/Memo
+                            </label>
+                            <input type="text" id="poMemoInput" class="form-control" placeholder="">
+                            <div class="input-hint">Optional purchase order number or reference memo for this core pickup.</div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 30px;">
+                            <button type="submit" class="btn-submit">
+                                Submit Core Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SUB-TAB 2: CORE REQUEST HISTORY TABLE -->
+                <div id="subtab-history-content" style="display: none;">
+                    
+                    <div class="ledger-table-container">
+                        <table class="ledger-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Order#</th>
+                                    <th>Location</th>
+                                    <th>Qty Requested</th>
+                                    <th>Qty Received</th>
+                                    <th>Credit Memo</th>
+                                    <th>Amount ($)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- VIEW 2: STANDARD MY ACCOUNT DEFAULT -->
+            <div id="view-my-account" style="display: none;">
+                <h1 class="page-title">My Account</h1>
+                <div class="account-details-grid">
+                    <div class="detail-block">
+                        <h3>Contact Information</h3>
+                        <p><strong>Tiffany Erck</strong></p>
+                        <p>ERCK.TIFFANY@mahindra.com</p>
+                        <p style="margin-top: 10px;"><a href="#" style="color: var(--primary-red);">Edit</a></p>
+                    </div>
+                    <div class="detail-block">
+                        <h3>Address Book</h3>
+                        <p><strong>Default Billing Address</strong></p>
+                        <p>Mahindra Houston, Tx</p>
+                        <p>Mahindra USA - OEM</p>
+                        <p>9020 JACKRABBIT ROAD</p>
+                        <p>Houston, Texas, 77095</p>
+                        <p>T: 2813524641</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: GENERIC PLACEHOLDER -->
+            <div id="view-generic-placeholder" style="display: none;">
+                <h1 class="page-title" id="generic-view-title">Section Title</h1>
+                <p style="color: var(--text-muted); font-style: italic;">This section is active in the live portal layout.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ACCURATE NETSUITE CREDIT MEMO PDF MODAL -->
+    <div class="modal-overlay" id="pdfModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-pdf"></i> NetSuite Document Viewer - Credit Memo PDF</h3>
+                <button class="modal-close" onclick="closePdfModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="pdf-paper">
+                    
+                    <div class="pdf-top-layout">
+                        <div>
+                            <div class="pdf-brand-logo">Continental</div>
+                            <div class="pdf-brand-sub">BATTERIES</div>
+                        </div>
+                        <div class="pdf-doc-title">CREDIT MEMO</div>
+                        <div>
+                            <table class="pdf-meta-table">
+                                <tr>
+                                    <td class="lbl">Credit Memo</td>
+                                    <td id="pdfCmNumVal">CM-90412</td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">Date</td>
+                                    <td id="pdfCmDateVal">8/22/2026</td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">Customer #</td>
+                                    <td>13624</td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">Current Terms</td>
+                                    <td>COD</td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">PO #</td>
+                                    <td id="pdfPoVal">31472</td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">Buyer Code</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="lbl">Page</td>
+                                    <td>1 of 1</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="pdf-address-grid">
+                        <div class="pdf-address-box">
+                            <div class="pdf-address-box-header">Bill To:</div>
+                            <div class="pdf-address-box-body" id="pdfBillToVal">
+                                Mahindra Houston, Tx<br>
+                                9020 JACKRABBIT ROAD<br>
+                                Houston TX 77095
+                            </div>
+                        </div>
+                        <div class="pdf-address-box">
+                            <div class="pdf-address-box-header">Delivered To:</div>
+                            <div class="pdf-address-box-body" id="pdfDeliveredToVal">
+                                Mahindra Houston, Tx<br>
+                                9020 JACKRABBIT ROAD<br>
+                                Houston TX 77095
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="pdf-items-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 45%;">DESCRIPTION</th>
+                                <th style="width: 12%; text-align: right;">UNITS</th>
+                                <th style="width: 13%; text-align: right;">COST</th>
+                                <th style="width: 15%; text-align: right;">EXT AMOUNT</th>
+                                <th style="width: 15%; text-align: right;">SUBTOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pdf-section-header-row">
+                                <td colspan="5">Exchange Junk Credit</td>
+                            </tr>
+                            <tr>
+                                <td style="padding-left: 15px;">Commercial Exchange Used Battery - STANDARD</td>
+                                <td class="text-right" id="pdfUnitsVal">15</td>
+                                <td class="text-right">$ -25.00</td>
+                                <td class="text-right" id="pdfExtAmtVal">$ -375.00</td>
+                                <td class="text-right"></td>
+                            </tr>
+                            <tr class="pdf-subtotal-row">
+                                <td style="font-weight: bold;">Subtotal</td>
+                                <td class="text-right" style="font-weight: bold;" id="pdfSubtotalUnitsVal">15</td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right" style="font-weight: bold;" id="pdfSubtotalAmtVal">$ -375.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pdf-footer-layout">
+                        <div class="pdf-signature-block">
+                            <p style="margin-bottom: 8px;">Signature: <span class="pdf-signature-line" style="font-family:'Brush Script MT', cursive; font-size:14px; padding-left:10px;">Joseph M</span></p>
+                            <p>Name: joseph</p>
+                            <p>D183-3526-0906</p>
+                        </div>
+                        <div>
+                            <table class="pdf-totals-table">
+                                <tr>
+                                    <td class="text-right" style="width:60%;">Subtotal</td>
+                                    <td class="text-right" id="pdfTotSubtotalVal">$ -375.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Total</td>
+                                    <td class="text-right" id="pdfTotTotalVal">$ -375.00</td>
+                                </tr>
+                                <tr style="height: 10px;"></tr>
+                                <tr class="grand-total">
+                                    <td class="text-right">Total To Credit</td>
+                                    <td class="text-right" id="pdfTotCreditVal">$ -375.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Payment Received</td>
+                                    <td class="text-right">$ 0.00</td>
+                                </tr>
+                                <tr class="grand-total">
+                                    <td class="text-right">Total Due</td>
+                                    <td class="text-right" id="pdfTotDueVal">$ -375.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Type Of Payment</td>
+                                    <td class="text-right">Credit Memo</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="margin-top:15px; text-align:right;">
+                    <button class="btn-submit" style="padding:8px 20px; font-size:12px;" onclick="closePdfModal()">Close Preview</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let locationMode = "multi"; 
+        
+        const multiLocations = [
+            { id: "", name: "-- Please Select Location --" },
+            { id: "loc1", name: "Mahindra Houston, Tx - 9020 Jackrabbit Road" },
+            { id: "loc2", name: "Mahindra Dallas, Tx - 1420 Industrial Blvd" },
+            { id: "loc3", name: "Mahindra San Antonio, Tx - 405 Commerce St" }
+        ];
+
+        const singleLocation = [
+            { id: "loc1", name: "Mahindra Houston, Tx - 9020 Jackrabbit Road" }
+        ];
+
+        let historyData = [
+            {
+                date: "2026-08-22",
+                orderNum: "10434616",
+                location: "Mahindra Houston, Tx",
+                qtyRequested: 15,
+                qtyReceived: 15,
+                creditMemo: "CM-90412",
+                amount: "$375.00",
+                status: "Completed",
+                poMemo: "PO-31472"
+            },
+            {
+                date: "2026-08-10",
+                orderNum: "10432190",
+                location: "Mahindra Dallas, Tx",
+                qtyRequested: 24,
+                qtyReceived: 24,
+                creditMemo: "CM-89201",
+                amount: "$600.00",
+                status: "Completed",
+                poMemo: "PO-29801"
+            },
+            {
+                date: "2026-08-24",
+                orderNum: "10435889",
+                location: "Mahindra Houston, Tx",
+                qtyRequested: 10,
+                qtyReceived: "-",
+                creditMemo: "-",
+                amount: "-",
+                status: "Pending",
+                poMemo: "MEMO-CORE-08"
+            }
+        ];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            populateLocationDropdown();
+            renderHistoryTable();
+        });
+
+        function switchMainView(viewId, element) {
+            document.querySelectorAll(".sidebar-link").forEach(link => link.classList.remove("active"));
+            element.classList.add("active");
+
+            document.getElementById("view-core-pickup-request").style.display = "none";
+            document.getElementById("view-my-account").style.display = "none";
+            document.getElementById("view-generic-placeholder").style.display = "none";
+
+            if (viewId === "core-pickup-request") {
+                document.getElementById("view-core-pickup-request").style.display = "block";
+            } else if (viewId === "my-account") {
+                document.getElementById("view-my-account").style.display = "block";
+            } else {
+                document.getElementById("generic-view-title").innerText = element.innerText.replace(" NEW", "");
+                document.getElementById("view-generic-placeholder").style.display = "block";
+            }
+        }
+
+        function switchSubTab(subTab) {
+            const btnForm = document.getElementById("btn-tab-form");
+            const btnHistory = document.getElementById("btn-tab-history");
+            const contentForm = document.getElementById("subtab-form-content");
+            const contentHistory = document.getElementById("subtab-history-content");
+
+            if (subTab === "form") {
+                btnForm.classList.add("active");
+                btnHistory.classList.remove("active");
+                contentForm.style.display = "block";
+                contentHistory.style.display = "none";
+            } else {
+                btnHistory.classList.add("active");
+                btnForm.classList.remove("active");
+                contentHistory.style.display = "block";
+                contentForm.style.display = "none";
+            }
+        }
+
+        function toggleLocationScenario() {
+            locationMode = document.getElementById("locationCountToggle").value;
+            populateLocationDropdown();
+        }
+
+        function populateLocationDropdown() {
+            const selectEl = document.getElementById("locationSelect");
+            selectEl.innerHTML = "";
+
+            const list = (locationMode === "single") ? singleLocation : multiLocations;
+            
+            list.forEach(loc => {
+                const opt = document.createElement("option");
+                opt.value = loc.id;
+                opt.textContent = loc.name;
+                selectEl.appendChild(opt);
+            });
+
+            if (locationMode === "single") {
+                selectEl.selectedIndex = 0;
+            }
+        }
+
+        function adjustQty(change) {
+            const input = document.getElementById("coreQtyInput");
+            let currentVal = parseInt(input.value) || 0;
+            currentVal += change;
+            if (currentVal < 1) currentVal = 1;
+            input.value = currentVal;
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const errorAlert = document.getElementById("form-error-alert");
+            const successAlert = document.getElementById("form-success-alert");
+            const errorText = document.getElementById("error-alert-text");
+            const qtyInput = parseInt(document.getElementById("coreQtyInput").value);
+            const locationSelect = document.getElementById("locationSelect");
+            const poMemoVal = document.getElementById("poMemoInput").value.trim();
+
+            errorAlert.style.display = "none";
+            successAlert.style.display = "none";
+
+            if (!locationSelect.value && locationMode === "multi") {
+                errorText.innerText = "Please select a valid pickup location.";
+                errorAlert.style.display = "block";
+                return;
+            }
+
+            if (qtyInput < 10) {
+                errorText.innerText = "We require a minimum request of 10 units.";
+                errorAlert.style.display = "block";
+                return;
+            }
+
+            const selectedLocationText = locationSelect.options[locationSelect.selectedIndex].text.split(" - ")[0];
+            const todayStr = new Date().toISOString().split('T')[0];
+            const randomOrderNum = "104" + Math.floor(10000 + Math.random() * 90000);
+
+            const newRecord = {
+                date: todayStr,
+                orderNum: randomOrderNum,
+                location: selectedLocationText,
+                qtyRequested: qtyInput,
+                qtyReceived: "-",
+                creditMemo: "-",
+                amount: "-",
+                status: "Pending",
+                poMemo: poMemoVal || "-"
+            };
+
+            historyData.unshift(newRecord);
+            renderHistoryTable();
+
+            successAlert.style.display = "block";
+            
+            setTimeout(() => {
+                successAlert.style.display = "none";
+                switchSubTab("history");
+                document.getElementById("coreQtyInput").value = 10;
+                document.getElementById("poMemoInput").value = "";
+                if (locationMode === "multi") locationSelect.selectedIndex = 0;
+            }, 1200);
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById("historyTableBody");
+            tbody.innerHTML = "";
+
+            if (historyData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-table-msg">No core pickup requests found.</td></tr>`;
+                return;
+            }
+
+            historyData.forEach(row => {
+                const tr = document.createElement("tr");
+
+                const statusClass = (row.status === "Completed") ? "status-completed" : "status-pending";
+                
+                let creditMemoHtml = row.creditMemo;
+                if (row.status === "Completed" && row.creditMemo !== "-") {
+                    creditMemoHtml = `<a href="#" class="cm-link" onclick="openPdfModal('${row.creditMemo}', '${row.date}', '${row.qtyReceived}', '${row.amount}', '${row.location}', '${row.poMemo}')"><i class="fa-solid fa-file-pdf"></i> ${row.creditMemo}</a>`;
+                }
+
+                tr.innerHTML = `
+                    <td>${row.date}</td>
+                    <td><strong>${row.orderNum}</strong></td>
+                    <td><strong>${row.location}</strong></td>
+                    <td>${row.qtyRequested}</td>
+                    <td>${row.qtyReceived}</td>
+                    <td>${creditMemoHtml}</td>
+                    <td>${row.amount}</td>
+                    <td><span class="status-badge ${statusClass}">${row.status}</span></td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openPdfModal(cmNum, date, qty, amountStr, locationName, poMemo) {
+            const cleanAmt = amountStr.replace("$", "").trim();
+            
+            document.getElementById("pdfCmNumVal").innerText = cmNum;
+            document.getElementById("pdfCmDateVal").innerText = date;
+            document.getElementById("pdfUnitsVal").innerText = qty;
+            document.getElementById("pdfSubtotalUnitsVal").innerText = qty;
+            document.getElementById("pdfPoVal").innerText = (poMemo && poMemo !== "-") ? poMemo : "31472";
+            
+            const negAmt = `$ -${cleanAmt}`;
+            document.getElementById("pdfExtAmtVal").innerText = negAmt;
+            document.getElementById("pdfSubtotalAmtVal").innerText = negAmt;
+            document.getElementById("pdfTotSubtotalVal").innerText = negAmt;
+            document.getElementById("pdfTotTotalVal").innerText = negAmt;
+            document.getElementById("pdfTotCreditVal").innerText = negAmt;
+            document.getElementById("pdfTotDueVal").innerText = negAmt;
+
+            document.getElementById("pdfBillToVal").innerHTML = `${locationName}<br>9020 JACKRABBIT ROAD<br>Houston TX 77095`;
+            document.getElementById("pdfDeliveredToVal").innerHTML = `${locationName}<br>9020 JACKRABBIT ROAD<br>Houston TX 77095`;
+
+            document.getElementById("pdfModal").style.display = "flex";
+        }
+
+        function closePdfModal() {
+            document.getElementById("pdfModal").style.display = "none";
+        }
+    </script>
+</body>
+</html>

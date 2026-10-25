@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal & Technical Architecture: B2B Core Pickup Request Digitization</title>
+    <style>
+        :root {
+            --primary-red: #c8102e;
+            --dark-header: #1c1d1f;
+            --secondary-dark: #2b2c2e;
+            --brand-yellow: #ffc20e;
+            --light-bg: #f8f9fa;
+            --border-color: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .proposal-container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            padding: 50px;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-red);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .brand-title {
+            font-size: 26px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-header);
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--primary-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .doc-type {
+            background-color: var(--secondary-dark);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: var(--dark-header);
+            margin-top: 0;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .executive-summary {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary-red);
+            padding: 20px 25px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 35px;
+            font-size: 15px;
+        }
+
+        h2 {
+            font-size: 19px;
+            color: var(--dark-header);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 14.5px;
+            color: #334155;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 30px 0;
+            font-size: 14px;
+        }
+
+        .tier-table th {
+            background-color: var(--secondary-dark);
+            color: #ffffff;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .tier-table tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .badge-standard {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .badge-heavy {
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .badge-completed {
+            background-color: #def7ec;
+            color: #03543f;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .disclaimer-box {
+            background-color: #e8f4fd;
+            border: 1px solid #90caf9;
+            border-left: 4px solid #1976d2;
+            border-radius: 6px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+
+        .disclaimer-title {
+            font-weight: 700;
+            color: #0d47a1;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .disclaimer-text {
+            font-family: inherit;
+            background: #ffffff;
+            border: 1px solid #bbdefb;
+            padding: 12px 14px;
+            font-size: 13.5px;
+            color: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .tech-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid #0284c7;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tech-card h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #0f172a;
+        }
+
+        .flow-diagram {
+            background: #1e293b;
+            color: #f8fafc;
+            font-family: monospace;
+            font-size: 12.5px;
+            padding: 18px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 20px 0;
+            line-height: 1.45;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="proposal-container">
+        <!-- Header -->
+        <div class="header-bar">
+            <div>
+                <div class="brand-title">Continental Battery Systems</div>
+                <div class="brand-subtitle">B2B Portal Initiative</div>
+            </div>
+            <div class="doc-type">Technical Architecture Specification</div>
+        </div>
+
+        <!-- Title -->
+        <h1>B2B Self-Service Core Pickup Request & Automated ERP/ION App Lifecycle Architecture</h1>
+
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <strong>Executive Summary:</strong> This specification details the technical architecture and business rationale for introducing a digitized **Self-Service Core Pickup Request** module within the B2B E-Commerce Portal ("My Account"). By providing customers with a streamlined request form and real-time core ledger, form submissions directly generate NetSuite Sales Orders using a dedicated non-inventory item (`pickup-only`) and custom Analysis Code. This insulates E-Commerce P&L from branch-level core credit liabilities while fully automating driver pick-tickets, ION App logistics logging, and Phase 2 NetSuite Credit Memo visualization.
+        </div>
+
+        <!-- Strategic Objectives -->
+        <h2>1. Strategic Objectives</h2>
+        <ul>
+            <li><strong>Eliminate Operational Friction:</strong> Replace manual phone calls, rep texts, and paper notes with an automated, self-service request module accessible 24/7 in the B2B Portal.</li>
+            <li><strong>Insulate E-Commerce Financial Obligations (P&L Protection):</strong> Apply a dedicated NetSuite Analysis Code to all self-service core pickup requests, ensuring the digital channel facilitates logistics without absorbing branch-managed financial liabilities or credit adjustments on E-Commerce P&L reporting.</li>
+            <li><strong>Digitize Branch & Driver Fulfillment Workflows:</strong> Automatically queue pickup requests as branch pick-tickets, feeding directly into route management and the driver **ION App** for seamless physical battery pickup logging.</li>
+            <li><strong>Auditability & Credit Visibility (Phase 2):</strong> Provide commercial buyers with full visibility into request history, actual units received, and direct links to generated NetSuite Credit Memo PDF documents.</li>
+        </ul>
+
+        <!-- B2B Frontend User Experience -->
+        <h2>2. B2B Portal User Interface & Form Specification</h2>
+
+        <div class="tech-card" style="border-left-color: #8b5cf6;">
+            <h3>Module Placement & Tabbed Navigation Structure</h3>
+            <p>The feature resides in the left-hand navigation sidebar under <strong>"Core Pickup Request"</strong> (with a highlighted <code>NEW</code> badge) and utilizes a 2-tab view layout:</p>
+            <ul>
+                <li><strong>Tab 1: Request Core Pickup (Default Landing):</strong> Features static operational disclaimers, pickup location selection, unit quantity controls, and optional internal reference inputs.</li>
+                <li><strong>Tab 2: Core Request History (Ledger View):</strong> Displays a structured ledger tracking all past requests, pickup statuses, fulfilled quantities, and hyperlinked NetSuite Credit Memos.</li>
+            </ul>
+        </div>
+
+        <div class="disclaimer-box">
+            <div class="disclaimer-title">Static Header Operational Disclaimer</div>
+            <div class="disclaimer-text">
+                "Please note, your servicing branch will arrive on your regular scheduled delivery date. To request a core pickup, please select how many cores you have, and which location they will be picked up from."
+            </div>
+        </div>
+
+        <div class="tech-card">
+            <h3>Form Validation & Input Parameters</h3>
+            <ul>
+                <li><strong>Pickup Location Selector:</strong> Dropdown search populating the customer's authorized child ship-to locations. Auto-prefills if the account maintains only one location.</li>
+                <li><strong>Minimum Quantity Threshold:</strong> Strict client-side and server-side validation enforcing a minimum of **10 cores** per request to optimize route logistics efficiency.</li>
+                <li><strong>PO / Reference Memo Field:</strong> Optional free-text field allowing customers to enter internal POs or reference past Continental Invoice #s (e.g., cross-referencing invoice lines where cores were previously unreturned).</li>
+            </ul>
+        </div>
+
+        <!-- End-to-End Technical Workflow Diagram -->
+        <h2>3. End-to-End Technical Workflow & System Integration</h2>
+        <p>Form submission bypasses standard cart/checkout screens to maintain a frictionless service request experience:</p>
+
+        <div class="flow-diagram">
+[Customer Submits Core Request Form (Qty >= 10, PO/Memo, Location)]
+       │
+       ▼
+[Magento Bypasses Cart/Checkout & Triggers Direct Sales Order Generator]
+       │  ├─ Appends Custom P&L Analysis Code: ANALYSIS_CORE_SERVICE_ONLY
+       │  └─ Injects Non-Inventory Line Item: SKU "pickup-only" (Qty = Requested)
+       │
+       ▼
+[NetSuite Ingests Sales Order & Renders Branch Pick-Ticket]
+       │
+       ▼
+[Branch Route Manager Schedules Driver Delivery Day Pickup]
+       │
+       ▼
+[Driver Collects Cores & Finalizes Transaction via ION App]
+       │  └─ Logs Exact Used Battery Quantities & Core Charge Types
+       │
+       ▼
+[NetSuite Generates Final Credit Memo (CM-XXXXX)]
+       │
+       ▼
+[Inbound Sync to Magento Portal (Phase 2 Integration)]
+       │  └─ Links Credit Memo PDF & Final Received Qty to Magento Order ID
+       │
+       ▼
+[Core Request History Tab Updated: Status = "Completed"]
+        </div>
+
+        <!-- Technical Architecture: P&L & Item Rules -->
+        <h2>4. Technical Specifications & Financial Rules</h2>
+
+        <div class="tech-card" style="border-left-color: #22c55e; background-color: #f0fdf4;">
+            <h3 style="color: #14532d;">System Configuration & ERP Parameter Rules</h3>
+            <ul>
+                <li><strong>Non-Inventory Item Placeholder:</strong> Utilizes a dedicated ERP SKU (<code>pickup-only</code>). This generates a zero-dollar or placeholder blended fulfillment line required for pick-ticket printing and warehouse visibility without impacting commercial product inventory levels.</li>
+                <li><strong>Financial Analysis Code Isolation:</strong> Orders created via this module carry an isolated Analysis Code (e.g., <code>ECOMM_CORE_SVC</code>). This tag signals financial reporting scripts to route all resulting credit memo adjustments back to the servicing branch's operational ledger, maintaining **E-Commerce P&L Neutrality**.</li>
+                <li><strong>Phase 2 Credit Memo Synchronization:</strong> Leverages the "Magic Button" Credit Memo portal integration framework. Once NetSuite finalizes the core credit, Magento ingests the Credit Memo ID, actual received unit count, dollar amount, and PDF document link, mapping them directly to the original Magento Order ID in the ledger.</li>
+            </ul>
+        </div>
+
+        <!-- Ledger Column Schema -->
+        <h2>5. Core Request History Ledger Schema</h2>
+
+        <table class="tier-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Order #</th>
+                    <th>Location</th>
+                    <th>Qty Requested</th>
+                    <th>Qty Received</th>
+                    <th>Credit Memo</th>
+                    <th>Amount ($)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2026-08-24</td>
+                    <td><strong>10435889</strong></td>
+                    <td>Mahindra Houston, Tx</td>
+                    <td>10</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td><span class="badge-heavy">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>2026-08-22</td>
+                    <td><strong>10434616</strong></td>
+                    <td>Mahindra Houston, Tx</td>
+                    <td>15</td>
+                    <td>15</td>
+                    <td><a href="#" style="color:#c8102e; font-weight:bold; text-decoration:none;">📄 CM-90412</a></td>
+                    <td>$375.00</td>
+                    <td><span class="badge-completed">Completed</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Financial ROI & Operational Leverage Metrics -->
+        <h2>6. Financial ROI & Operational Leverage Metrics</h2>
+        <div class="tech-card" style="border-left-color: #22c55e; background-color: #f0fdf4;">
+            <h3 style="color: #14532d;">Executive Key Performance Indicators (KPIs) & Value Drivers</h3>
+            <ul>
+                <li><strong>Branch Administrative Cost Reduction:</strong> Eliminates manual phone call/email intake, saving an estimated <strong>10–12 minutes of branch rep labor per request</strong> (~$50,000+ annually across nationwide distribution centers).</li>
+                <li><strong>Accelerated Core Capital Velocity:</strong> Digitizing and enforcing minimum pickup thresholds (10+ units) speeds up core return cycles, accelerating recycling turnaround and unlocking branch capital bound in uncollected customer core liabilities.</li>
+                <li><strong>Zero E-Commerce P&L Distortion:</strong> Custom NetSuite Analysis Code routing ensures digital adoption KPIs grow without incorrectly saddling the e-commerce department with branch-managed core credit liabilities.</li>
+                <li><strong>100% Billing & Collection Accuracy:</strong> Tying the digital request ID through to the driver’s **ION App** prevents manual core count discrepancies, reducing invoice disputes and customer service escalation volume by an estimated <strong>40%</strong>.</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            Continental Battery Systems &bull; B2B E-Commerce Technical Proposal &bull; Confidential
+        </div>
+    </div>
+
+</body>
+</html>

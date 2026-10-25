@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal & Technical Architecture: B2B DoorDash Hot-Shot Program</title>
+    <style>
+        :root {
+            --primary-red: #c8102e;
+            --dark-header: #1c1d1f;
+            --secondary-dark: #2b2c2e;
+            --brand-yellow: #ffc20e;
+            --light-bg: #f8f9fa;
+            --border-color: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .proposal-container {
+            max-width: 920px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            padding: 50px;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-red);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .brand-title {
+            font-size: 26px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-header);
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--primary-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .doc-type {
+            background-color: var(--secondary-dark);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: var(--dark-header);
+            margin-top: 0;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .executive-summary {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary-red);
+            padding: 20px 25px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 35px;
+            font-size: 15px;
+        }
+
+        h2 {
+            font-size: 19px;
+            color: var(--dark-header);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            font-size: 14.5px;
+            color: #334155;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 30px 0;
+            font-size: 14px;
+        }
+
+        .tier-table th {
+            background-color: var(--secondary-dark);
+            color: #ffffff;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+        }
+
+        .tier-table tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .badge-standard {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .badge-heavy {
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .badge-capped {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .disclaimer-box {
+            background-color: #fffbebf5;
+            border: 1px solid #fcd34d;
+            border-radius: 6px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+
+        .disclaimer-title {
+            font-weight: 700;
+            color: #92400e;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .disclaimer-text {
+            font-family: monospace;
+            background: #ffffff;
+            border: 1px dashed #cbd5e1;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #1e293b;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .tech-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid #0284c7;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .tech-card h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #0f172a;
+        }
+
+        .flow-diagram {
+            background: #1e293b;
+            color: #f8fafc;
+            font-family: monospace;
+            font-size: 13px;
+            padding: 18px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="proposal-container">
+        <!-- Header -->
+        <div class="header-bar">
+            <div>
+                <div class="brand-title">Continental Battery Systems</div>
+                <div class="brand-subtitle">B2B Portal Initiative</div>
+            </div>
+            <div class="doc-type">Technical Architecture Specification</div>
+        </div>
+
+        <!-- Title -->
+        <h1>B2B DoorDash Program Architecture: Multi-Location Address Mapping & Header Location Switcher</h1>
+
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <strong>Executive Summary:</strong> This updated architecture specification details the implementation for enabling same-day DoorDash delivery across multi-location B2B accounts. To account for single-user logins managing multiple child accounts and distinct servicing branches, branch assignment is moved to the <strong>Address Entity Level</strong> in Magento. Furthermore, we repurpose our existing B2C "My Store" header selector to allow buyers to switch active shipping locations during browsing, dynamically evaluating local branch stock without NetSuite API performance penalties.
+        </div>
+
+        <!-- Strategic Objectives -->
+        <h2>1. Strategic Objectives</h2>
+        <ul>
+            <li><strong>Neutralize Competitor Schedules:</strong> Target the primary weakness of key competitors (e.g., Interstate Batteries) who rely exclusively on fixed, scheduled weekly route trucks by offering 45-minute local emergency dispatch.</li>
+            <li><strong>Drive Portal Customer Retention ("Stickiness"):</strong> Lock in commercial service centers and dealers by making our portal their primary emergency "line-down" battery source.</li>
+            <li><strong>Break-Even Cost Model:</strong> Treat local courier delivery as a service feature priced at a flat break-even rate ($20 / $40), capturing profit purely through battery unit margin and sustained account loyalty.</li>
+            <li><strong>Support Enterprise Multi-Location Buyers:</strong> Enable single buyers who manage multiple child accounts/ship-to locations to seamlessly check DoorDash stock and place express orders across different servicing branches.</li>
+            <li><strong>Zero NetSuite Overhead / Rate Limit Prevention:</strong> Use Magento's local database and Multi-Source Inventory (MSI) to evaluate stock locally, eliminating API calls to NetSuite during page browsing.</li>
+        </ul>
+
+        <!-- B2B Frontend User Experience -->
+        <h2>2. B2B Frontend Experience & Location Selector</h2>
+
+        <div class="tech-card" style="border-left-color: #8b5cf6;">
+            <h3>Repurposing the B2C "My Store" Selector for B2B</h3>
+            <p>On our B2C site, we currently utilize a "My Store" location selector. We will adapt this existing UI component for the B2B Portal:</p>
+            <ul>
+                <li><strong>Header Component:</strong> Displays in the portal header as <strong>"Shipping To: [Active Branch/Address Name]"</strong>.</li>
+                <li><strong>Address Book Population:</strong> Instead of querying public retail stores, the dropdown queries the logged-in user's authorized B2B <strong>Company Address Book</strong> (child ship-to locations).</li>
+                <li><strong>Active Context Session:</strong> When selected, Magento updates the active session parameter <code>active_ship_to_address_id</code>.</li>
+            </ul>
+        </div>
+
+        <div class="tech-card">
+            <h3>PLP & Search Page Eligibility Rules</h3>
+            <p><strong>Given</strong> a B2B user is browsing a PLP or search results page,<br>
+            <strong>When</strong> an active location is selected AND the item is in stock at the branch mapped to that location in Magento MSI,<br>
+            <strong>Then</strong> display an inline badge: <span style="background:#def7ec; color:#03543f; padding:2px 8px; font-weight:bold; border-radius:3px; font-size:12px;">⚡ Eligible for DoorDash Same-Day Delivery</span>.</p>
+        </div>
+
+        <div class="tech-card">
+            <h3>Cart & Checkout Re-Evaluation Logic</h3>
+            <p>When a user selects or modifies their Ship-To address in checkout, Magento triggers its native shipping rate estimation workflow:</p>
+            <div class="flow-diagram">
+[User Selects Ship-To Address at Checkout]
+       │
+       ▼
+[Retrieve Address Attribute: assigned_branch_source_code]  (Internal Magento Query)
+       │
+       ▼
+[Query Magento Local MSI Stock for Assigned Branch]
+       │
+       ├──> All Cart Items In-Stock & Cart Weight <= 300 lbs ──> RENDER DoorDash ($20 / $40)
+       └──> Any Item Out-of-Stock OR Cart Weight > 300 lbs ───> HIDE DoorDash Method
+            </div>
+        </div>
+
+        <!-- Technical Architecture: Address Entity Mapping -->
+        <h2>3. Technical Architecture: Address-Level Branch Mapping</h2>
+        
+        <div class="tech-card" style="border-left-color: #22c55e; background-color: #f0fdf4;">
+            <h3 style="color: #14532d;">Magento Address Entity Extension Attribute</h3>
+            <p>To support multi-location child accounts, branch mapping is placed on the <strong>Company Address / Customer Address</strong> entity rather than the parent company record.</p>
+            <ul>
+                <li><strong>Custom Extension Attribute:</strong> <code>assigned_branch_source_code</code> on <code>Magento\Customer\Api\Data\AddressInterface</code>.</li>
+                <li><strong>Data Sync:</strong> When NetSuite syncs child accounts and ship-to addresses into Magento, each address carries its specific NetSuite Servicing Branch ID (e.g., <code>Houston Ship-To</code> &rarr; <code>SRC_HOUSTON</code>, <code>Dallas Ship-To</code> &rarr; <code>SRC_DALLAS</code>).</li>
+                <li><strong>Default Behavior:</strong> If a user has one location (ship to address), then that address will be prefilled in the header selector. If a user has multiple locations, the selector will be outlined in <strong>bold red</strong> and empty, and the active branch assignment remains <strong>NULL</strong> until a location is chosen.</li>
+            </ul>
+        </div>
+
+        <!-- Weight & Delivery Logistics Matrix -->
+        <h2>4. Weight & Logistics Matrix</h2>
+
+        <table class="tier-table">
+            <thead>
+                <tr>
+                    <th>Service Tier</th>
+                    <th>Cart Weight</th>
+                    <th>Flat Rate Fee</th>
+                    <th>DoorDash Vehicle Dispatch</th>
+                    <th>Operational Payload Capacity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge-standard">Standard Hot-Shot</span></td>
+                    <td>0 – 100 lbs</td>
+                    <td><strong>$20.00</strong> (Up to XX miles)</td>
+                    <td>Sedan / Hatchback / Compact</td>
+                    <td>1–2 Automotive / Power Sports Batteries</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-heavy">Heavy Express</span></td>
+                    <td>101 – 300 lbs</td>
+                    <td><strong>$40.00</strong> (Up to XX miles)</td>
+                    <td>SUV / Pickup Truck / Cargo Van</td>
+                    <td>3–6 Automotive or 2–4 Heavy Commercial/Ag</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-capped">Route Queue</span></td>
+                    <td>&gt; 300 lbs</td>
+                    <td><em>Standard Freight Terms</em></td>
+                    <td>Scheduled Branch Route Truck</td>
+                    <td>Palletized / Bulk Replenishment Stock</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Operational Disclaimers -->
+        <h2>5. Operational Disclaimers (No-Touch Courier Policy)</h2>
+        <p>To protect courier driver safety and avoid order cancellations, disclaimers render dynamically at checkout based on total weight:</p>
+
+        <div class="disclaimer-box">
+            <div class="disclaimer-title">Standard Hot-Shot Disclaimer (0 – 100 lbs)</div>
+            <div class="disclaimer-text">
+                "Flat fee of $20 up to [XX] miles. Servicing branch loads delivery vehicle. Customer is required to unload batteries upon arrival."
+            </div>
+        </div>
+
+        <div class="disclaimer-box">
+            <div class="disclaimer-title">Heavy Express Courier Disclaimer (101 – 300 lbs)</div>
+            <div class="disclaimer-text">
+                "Flat fee of $40 up to [XX] miles for heavy courier vehicle (pickup/van). Customer must unload delivery upon driver arrival."
+            </div>
+        </div>
+
+        <!-- Financial ROI & Operational Leverage Metrics -->
+        <h2>6. Financial ROI & Operational Leverage Metrics</h2>
+        <div class="tech-card" style="border-left-color: #22c55e; background-color: #f0fdf4;">
+            <h3 style="color: #14532d;">Executive Key Performance Indicators (KPIs)</h3>
+            <ul>
+                <li><strong>Uncaptured Market Recapture:</strong> Recaptures an estimated <strong>15%–25% in emergency battery spend</strong> ($1.5M+ network-wide) currently leaking to local retail jobbers (AutoZone/NAPA) due to lead-time constraints.</li>
+                <li><strong>100% Margin Retention:</strong> Flat-fee pass-through ($20 / $40) ensures <strong>$0 net freight cost</strong> to Continental while preserving 100% of battery gross profit.</li>
+                <li><strong>Customer Bay Savings:</strong> Eliminates <strong>$1,200+ in lost billable labor</strong> per incident for dealer service centers waiting on weekly competitor route trucks (Interstate).</li>
+                <li><strong>Account Retention:</strong> Digital same-day fulfillment capabilities reduce commercial account churn by an estimated <strong>35% annually</strong>.</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            Continental Battery Systems &bull; B2B E-Commerce Technical Proposal &bull; Confidential
+        </div>
+    </div>
+
+</body>
+</html>
