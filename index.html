@@ -61,6 +61,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 12px;
+            gap: 15px;
         }
         .card-title { font-size: 20px; font-weight: 700; color: #fff; }
         .badge {
@@ -71,6 +72,7 @@
             padding: 4px 8px;
             border-radius: 4px;
             text-transform: uppercase;
+            white-space: nowrap;
         }
         .card-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 18px; }
         .specs-list {
@@ -80,7 +82,16 @@
             padding-left: 20px;
         }
         .specs-list li { margin-bottom: 6px; }
-        .btn-group { display: flex; gap: 12px; }
+        .note-box {
+            background: rgba(56, 189, 248, 0.08);
+            border-left: 3px solid var(--accent);
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #bae6fd;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 18px;
+        }
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
         .btn {
             display: inline-block;
             background: var(--accent);
@@ -109,7 +120,7 @@
             <h1>Blake Fowler-Braziel</h1>
             <div class="subtitle">Platforms & Technical Product Manager</div>
             <p class="bio">
-                Deconstructing enterprise systems into atomic inputs, transformations, and outputs. Specializing in ERP/commerce integrations, asynchronous data synchronization, and developer-in-the-loop architecture.
+                Deconstructing enterprise systems into atomic inputs, transformations, and outputs. Specializing in ERP/commerce integrations, asynchronous data pipelines, and developer-in-the-loop technical architecture.
             </p>
             <div class="links-bar">
                 <a href="https://linkedin.com/in/blakebraziel22" target="_blank">LinkedIn Profile</a>
@@ -117,9 +128,9 @@
             </div>
         </header>
 
-        <div class="section-title">Architectural Case Studies & Prototypes</div>
+        <div class="section-title">Architectural Case Studies & System Specifications</div>
 
-        <!-- Project 1 -->
+        <!-- Project 1: Core Pickup -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">B2B Core Pickup Request & ERP Lifecycle Integration</div>
@@ -129,8 +140,8 @@
                 An end-to-end reverse logistics architecture designed to eliminate paper manifests and phone calls by digitizing lead-acid battery core collections within the enterprise portal.
             </p>
             <ul class="specs-list">
-                <li><strong>ERP Data Isolation:</strong> Submissions generate NetSuite Sales Orders with custom Analysis Codes, isolating e-commerce P&L from branch-level core credit liabilities.</li>
-                <li><strong>Field Fulfillment:</strong> Feeds driver pick-tickets directly into the mobile ION app for collection logging.</li>
+                <li><strong>ERP Financial Isolation:</strong> Submissions generate NetSuite Sales Orders using a dedicated non-inventory item (`pickup-only`) and custom Analysis Codes, completely insulating e-commerce P&L from branch-level core credit liabilities.</li>
+                <li><strong>Field Fulfillment:</strong> Directly feeds driver pick-tickets into the mobile ION app for collection logging.</li>
                 <li><strong>Credit Automation:</strong> Phase 2 automated NetSuite Credit Memo reconciliation directly mapped to portal order IDs.</li>
             </ul>
             <div class="btn-group">
@@ -139,7 +150,7 @@
             </div>
         </div>
 
-        <!-- Project 2 -->
+        <!-- Project 2: DoorDash B2B -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">B2B DoorDash Hot-Shot Dispatch & Multi-Location Mapping</div>
@@ -148,6 +159,9 @@
             <p class="card-desc">
                 A localized 45-minute dispatch engine designed to capture emergency wholesale orders and counter scheduled weekly competitor routes.
             </p>
+            <div class="note-box">
+                <strong>Architecture Note:</strong> No custom UI prototype was required for this project. The front-end framework already exists on our B2C platform ("My Store" selector); this specification focuses on extending the address entity and repurposing those production UI assets for complex B2B multi-location hierarchies.
+            </div>
             <ul class="specs-list">
                 <li><strong>Address-Level Architecture:</strong> Maps servicing branch codes directly to the Magento Address entity to support single logins managing multiple child facilities.</li>
                 <li><strong>Rate Limit Prevention:</strong> Evaluates local stock via Magento MSI to eliminate NetSuite API bottlenecks during browsing.</li>
@@ -155,6 +169,44 @@
             </ul>
             <div class="btn-group">
                 <a href="DoordashB2B.html" class="btn">Read Technical Architecture</a>
+            </div>
+        </div>
+
+        <!-- Project 3: Pre-Built POS Connectors -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Pre-Built POS & Shop Management Connectors (cXML / Webhooks)</div>
+                <span class="badge">Systems Integration Brief</span>
+            </div>
+            <p class="card-desc">
+                Lightweight ERP/POS webhooks and cXML PunchOut connectors designed for dealer software (QuickBooks, Lightspeed, CDK Global) to maximize account retention and switching costs.
+            </p>
+            <ul class="specs-list">
+                <li><strong>Single Source of Truth:</strong> Routes automated purchase orders through Magento so transactions remain visible in customer portals alongside manual orders and credit memos.</li>
+                <li><strong>cXML PunchOut Support:</strong> Enables enterprise fleets (SAP Ariba, Coupa) to browse visual catalogs with real-time contract pricing while enforcing internal procurement approval flows.</li>
+                <li><strong>Rapid Onboarding:</strong> Standardized REST endpoints reduce dealer integration lead times from 8–12 weeks (custom NetSuite EDI) down to 1–2 weeks.</li>
+            </ul>
+            <div class="btn-group">
+                <a href="pos_cxml_connectors_specification.html" class="btn">Read Integration Proposal</a>
+            </div>
+        </div>
+
+        <!-- Project 4: NetSuite Delivery Route Architecture -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">NetSuite Automated Delivery Route & Schedule Architecture</div>
+                <span class="badge">Data Governance & ERP</span>
+            </div>
+            <p class="card-desc">
+                Abstracting a frontend delivery-schedule feature request into a core ERP data governance solution to eliminate manual branch data entry and enforce downstream data completeness.
+            </p>
+            <ul class="specs-list">
+                <li><strong>Discovery Root-Cause:</strong> A pre-development data audit revealed missing Delivery Day records caused by branch entry friction during account creation.</li>
+                <li><strong>ERP Automation:</strong> Re-architected NetSuite to deterministically derive and populate Delivery Day automatically from the assigned Servicing Route.</li>
+                <li><strong>Downstream Integrity:</strong> Unlocks clean data ingestion for Magento to display schedule windows and enforce dynamic 48-hour ordering cutoffs.</li>
+            </ul>
+            <div class="btn-group">
+                <a href="netsuite_delivery_route_architecture.html" class="btn">Read Project Brief</a>
             </div>
         </div>
     </div>
