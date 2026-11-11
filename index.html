@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blake Fowler-Braziel | Platforms & Technical Product Portfolio</title>
+    <title>Blake Fowler-Braziel | Technical & Platforms Product Manager</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -13,7 +13,9 @@
             --text-muted: #94a3b8;
             --accent: #38bdf8;
             --accent-hover: #0ea5e9;
-            --badge-bg: #0369a1;
+            --badge-shipped: #059669;
+            --badge-backlog: #b45309;
+            --badge-spec: #0369a1;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -26,13 +28,13 @@
         .container { max-width: 900px; margin: 0 auto; }
         header {
             border-bottom: 1px solid var(--border);
-            padding-bottom: 25px;
+            padding-bottom: 28px;
             margin-bottom: 35px;
         }
-        h1 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+        h1 { font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 6px; }
         .subtitle { font-size: 18px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
-        .bio { font-size: 15px; color: var(--text-muted); max-width: 750px; }
-        .links-bar { margin-top: 15px; display: flex; gap: 15px; }
+        .bio { font-size: 15px; color: var(--text-muted); max-width: 780px; }
+        .links-bar { margin-top: 16px; display: flex; gap: 18px; flex-wrap: wrap; }
         .links-bar a {
             color: var(--accent);
             text-decoration: none;
@@ -40,19 +42,48 @@
             font-weight: 600;
         }
         .links-bar a:hover { text-decoration: underline; }
+
+        /* Executive KPI Strip */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin-top: 24px;
+        }
+        .kpi-box {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 14px 16px;
+        }
+        .kpi-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .kpi-value span { color: var(--accent); }
+        .kpi-label {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
         .section-title {
-            font-size: 20px;
+            font-size: 15px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 24px;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
             transition: border-color 0.2s;
         }
         .card:hover { border-color: var(--accent); }
@@ -60,25 +91,36 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             gap: 15px;
+            flex-wrap: wrap;
         }
         .card-title { font-size: 20px; font-weight: 700; color: #fff; }
         .badge {
-            background-color: var(--badge-bg);
+            background-color: var(--badge-spec);
             color: #fff;
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 8px;
+            padding: 4px 9px;
             border-radius: 4px;
             text-transform: uppercase;
             white-space: nowrap;
+            letter-spacing: 0.4px;
         }
-        .card-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 18px; }
+        .badge-shipped { background-color: var(--badge-shipped); }
+        .badge-backlog { background-color: var(--badge-backlog); }
+
+        .roi-banner {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #7dd3fc;
+            margin-bottom: 12px;
+        }
+        .card-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
         .specs-list {
             font-size: 13.5px;
             color: #cbd5e1;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             padding-left: 20px;
         }
         .specs-list li { margin-bottom: 6px; }
@@ -88,6 +130,15 @@
             padding: 10px 14px;
             font-size: 13px;
             color: #bae6fd;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 16px;
+        }
+        .priority-note {
+            background: rgba(245, 158, 11, 0.08);
+            border-left: 3px solid #f59e0b;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #fde68a;
             border-radius: 0 4px 4px 0;
             margin-bottom: 18px;
         }
@@ -109,106 +160,69 @@
             color: var(--text-main);
             border: 1px solid var(--border);
         }
-        .btn-secondary:hover {
-            background: var(--border);
-        }
+        .btn-secondary:hover { background: var(--border); }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Blake Fowler-Braziel</h1>
-            <div class="subtitle">Platforms & Technical Product Manager</div>
+            <div class="subtitle">Technical &amp; Platforms Product Manager</div>
             <p class="bio">
-                Deconstructing enterprise systems into atomic inputs, transformations, and outputs. Specializing in ERP/commerce integrations, asynchronous data pipelines, and developer-in-the-loop technical architecture.
+                Scaling B2B commerce ecosystems, NetSuite ERP integrations, and event-driven data pipelines across a $1B national distribution network—pairing frontline logistics expertise with a "developer-in-the-loop Day 1" methodology to turn operational friction into 2.35x compounding revenue growth.
             </p>
             <div class="links-bar">
                 <a href="https://linkedin.com/in/blakebraziel22" target="_blank">LinkedIn Profile</a>
                 <a href="mailto:Blake.braziel22@gmail.com">Contact via Email</a>
             </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-box">
+                    <div class="kpi-value"><span>2.35x</span> Platform Growth</div>
+                    <div class="kpi-label">+50% YoY revenue in 2025 followed by +57% YTD YoY compounding growth in 2026.</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value"><span>$1M ARR</span> Enterprise Win</div>
+                    <div class="kpi-label">Unlocked National Accounts enterprise onboarding via automated ERP/commerce provisioning.</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value"><span>Up to 80%</span> Faster Discovery</div>
+                    <div class="kpi-label">Cut technical alignment overhead via upfront data matrices &amp; AI-prototyped JSON schemas.</div>
+                </div>
+            </div>
         </header>
 
-        <div class="section-title">Architectural Case Studies & System Specifications</div>
+        <div class="section-title">Shipped Platform Initiatives</div>
 
-        <!-- Project 1: Core Pickup -->
+        <!-- Project 1: Automated Account, Pricing & Reorder Pad Engine -->
         <div class="card">
             <div class="card-header">
-                <div class="card-title">B2B Core Pickup Request & ERP Lifecycle Integration</div>
-                <span class="badge">Architecture & Interactive Prototype</span>
+                <div class="card-title">Automated B2B Account, Pricing &amp; Algorithmic Reorder Pad Engine</div>
+                <span class="badge badge-shipped">Shipped &amp; Scaling</span>
             </div>
+            <div class="roi-banner">Commercial Impact: Enabled $1M ARR National Account onboarding &amp; 2.35x compounding platform revenue</div>
             <p class="card-desc">
-                An end-to-end reverse logistics architecture designed to eliminate paper manifests and phone calls by digitizing lead-acid battery core collections within the enterprise portal.
+                An end-to-end onboarding and replenishment pipeline that automatically provisions existing NetSuite ERP customers into Adobe Commerce (Magento Cloud) with full pricing, purchasing history, and predictive reorder catalogs.
             </p>
             <ul class="specs-list">
-                <li><strong>ERP Financial Isolation:</strong> Submissions generate NetSuite Sales Orders using a dedicated non-inventory item (`pickup-only`) and custom Analysis Codes, completely insulating e-commerce P&L from branch-level core credit liabilities.</li>
-                <li><strong>Field Fulfillment:</strong> Directly feeds driver pick-tickets into the mobile ION app for collection logging.</li>
-                <li><strong>Credit Automation:</strong> Phase 2 automated NetSuite Credit Memo reconciliation directly mapped to portal order IDs.</li>
+                <li><strong>Automated Pricing &amp; Account Provisioning:</strong> Eliminated manual portal setup by synchronizing NetSuite customer records with account-specific base, custom, and group pricing tiers on day one.</li>
+                <li><strong>Algorithmic Reorder Pad Engine:</strong> Generated dynamic, customer-tailored replenishment pads driven by historical ERP purchase velocity to accelerate repeat commercial ordering.</li>
+                <li><strong>Rolling 12-Month Invoice Ledger:</strong> Surfaced a live, rolling 365-day invoice and credit history directly inside the B2B portal, reducing accounting inquiry tickets and unlocking enterprise National Account requirements.</li>
             </ul>
-            <div class="btn-group">
-                <a href="coreproposal.html" class="btn">Read Architecture Proposal</a>
-                <a href="coreRequest.html" class="btn btn-secondary">Launch Interactive Prototype</a>
-            </div>
         </div>
+
+        <div class="section-title" style="margin-top: 38px;">Validated Product Specs &amp; Systems Architecture</div>
 
         <!-- Project 2: DoorDash B2B -->
         <div class="card">
             <div class="card-header">
-                <div class="card-title">B2B DoorDash Hot-Shot Dispatch & Multi-Location Mapping</div>
-                <span class="badge">Technical Specification</span>
+                <div class="card-title">B2B DoorDash Hot-Shot Dispatch &amp; Multi-Location Mapping</div>
+                <span class="badge badge-backlog">Validated Spec &bull; Roadmap Backlog</span>
             </div>
+            <div class="roi-banner">Modeled Opportunity: $1.5M+ uncaptured emergency market TAM &amp; ~35% projected commercial churn reduction</div>
             <p class="card-desc">
                 A localized 45-minute dispatch engine designed to capture emergency wholesale orders and counter scheduled weekly competitor routes.
             </p>
             <div class="note-box">
-                <strong>Architecture Note:</strong> No custom UI prototype was required for this project. The front-end framework already exists on our B2C platform ("My Store" selector); this specification focuses on extending the address entity and repurposing those production UI assets for complex B2B multi-location hierarchies.
+                <strong>Architecture Note:</strong> No custom UI prototype was required. The front-end framework already exists on our B2C platform ("My Store" selector); this specification extends the address entity and repurposes production UI assets for complex B2B multi-location hierarchies.
             </div>
-            <ul class="specs-list">
-                <li><strong>Address-Level Architecture:</strong> Maps servicing branch codes directly to the Magento Address entity to support single logins managing multiple child facilities.</li>
-                <li><strong>Rate Limit Prevention:</strong> Evaluates local stock via Magento MSI to eliminate NetSuite API bottlenecks during browsing.</li>
-                <li><strong>Logistics Tiering:</strong> Dynamic checkout weight enforcement (0–100 lbs vs 101–300 lbs) paired with courier no-touch safety rules.</li>
-            </ul>
-            <div class="btn-group">
-                <a href="DoordashB2B.html" class="btn">Read Technical Architecture</a>
-            </div>
-        </div>
-
-        <!-- Project 3: Pre-Built POS Connectors -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Pre-Built POS & Shop Management Connectors (cXML / Webhooks)</div>
-                <span class="badge">Systems Integration Brief</span>
-            </div>
-            <p class="card-desc">
-                Lightweight ERP/POS webhooks and cXML PunchOut connectors designed for dealer software (QuickBooks, Lightspeed, CDK Global) to maximize account retention and switching costs.
-            </p>
-            <ul class="specs-list">
-                <li><strong>Single Source of Truth:</strong> Routes automated purchase orders through Magento so transactions remain visible in customer portals alongside manual orders and credit memos.</li>
-                <li><strong>cXML PunchOut Support:</strong> Enables enterprise fleets (SAP Ariba, Coupa) to browse visual catalogs with real-time contract pricing while enforcing internal procurement approval flows.</li>
-                <li><strong>Rapid Onboarding:</strong> Standardized REST endpoints reduce dealer integration lead times from 8–12 weeks (custom NetSuite EDI) down to 1–2 weeks.</li>
-            </ul>
-            <div class="btn-group">
-                <a href="pos_cxml_connectors_specification.html" class="btn">Read Integration Proposal</a>
-            </div>
-        </div>
-
-        <!-- Project 4: NetSuite Delivery Route Architecture -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">NetSuite Automated Delivery Route & Schedule Architecture</div>
-                <span class="badge">Data Governance & ERP</span>
-            </div>
-            <p class="card-desc">
-                Abstracting a frontend delivery-schedule feature request into a core ERP data governance solution to eliminate manual branch data entry and enforce downstream data completeness.
-            </p>
-            <ul class="specs-list">
-                <li><strong>Discovery Root-Cause:</strong> A pre-development data audit revealed missing Delivery Day records caused by branch entry friction during account creation.</li>
-                <li><strong>ERP Automation:</strong> Re-architected NetSuite to deterministically derive and populate Delivery Day automatically from the assigned Servicing Route.</li>
-                <li><strong>Downstream Integrity:</strong> Unlocks clean data ingestion for Magento to display schedule windows and enforce dynamic 48-hour ordering cutoffs.</li>
-            </ul>
-            <div class="btn-group">
-                <a href="netsuite_delivery_route_architecture.html" class="btn">Read Project Brief</a>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
