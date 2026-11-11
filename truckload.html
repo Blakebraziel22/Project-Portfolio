@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truckload Builder & Checkout Prototype</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --dark-header: #0f172a;
+            --accent-stop1: #b45309; /* Bronze */
+            --accent-stop2: #047857; /* Green */
+            --accent-stop3: #1d4ed8; /* Blue */
+            --btn-checkout: #f59e0b; /* Yellow/Amber */
+            --btn-checkout-hover: #d97706;
+            --progress-yellow: #f59e0b;
+            --progress-green: #22c55e;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px 40px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* --- STOPS SELECTOR --- */
+        .stops-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stop-card {
+            flex: 1;
+            background: var(--surface);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+            text-align: center;
+        }
+
+        .stop-card.active { border-style: solid; }
+        .stop-card.active[data-stop="1"] { border-color: var(--accent-stop1); box-shadow: 0 4px 12px rgba(180, 83, 9, 0.1); }
+        .stop-card.active[data-stop="2"] { border-color: var(--accent-stop2); box-shadow: 0 4px 12px rgba(4, 120, 87, 0.1); }
+        .stop-card.active[data-stop="3"] { border-color: var(--accent-stop3); box-shadow: 0 4px 12px rgba(29, 78, 216, 0.1); }
+
+        .stop-card.populated {
+            align-items: flex-start;
+            text-align: left;
+            border-style: solid;
+        }
+
+        .stop-header-badge {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .stop-card[data-stop="1"] .stop-header-badge { color: var(--accent-stop1); }
+        .stop-card[data-stop="2"] .stop-header-badge { color: var(--accent-stop2); }
+        .stop-card[data-stop="3"] .stop-header-badge { color: var(--accent-stop3); }
+
+        .stop-name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .stop-address { font-size: 13px; color: var(--text-muted); }
+        
+        .add-stop-circle {
+            width: 32px; height: 32px;
+            background: #111; color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 18px; margin-bottom: 10px;
+        }
+
+        /* --- TRUCK HEADER STATUS BAR --- */
+        .truck-status {
+            background-color: var(--dark-header);
+            border-radius: 8px;
+            padding: 20px 28px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        }
+
+        .load-title { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .load-name { font-size: 18px; font-weight: 700; }
+
+        .progress-section {
+            flex: 1;
+            margin: 0 35px;
+            display: flex;
+            gap: 35px;
+        }
+
+        .progress-block { flex: 1; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; font-weight: 600; letter-spacing: 0.5px;}
+        .progress-header span:last-child { color: #9ca3af; font-weight: 400; }
+        .progress-bar-bg {
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        #pallet-fill { background-color: var(--progress-yellow); }
+        #weight-fill { background-color: var(--progress-green); }
+        
+        .progress-markers { display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 6px; }
+
+        .value-block {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .value-details { text-align: right; }
+        .value-label { font-size: 10px; color: #94a3b8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+        .value-amount { font-size: 26px; font-weight: 800; color: #fff; }
+
+        .btn-checkout-trigger {
+            background-color: var(--btn-checkout);
+            color: #111827;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-checkout-trigger:hover {
+            background-color: var(--btn-checkout-hover);
+            transform: translateY(-1px);
+        }
+        .btn-checkout-trigger:disabled {
+            background-color: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* --- MAIN GRID --- */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 30px;
+        }
+
+        .section-header {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- CATALOG --- */
+        .catalog {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .catalog-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .catalog-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .catalog-table td {
+            padding: 18px 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .product-info { display: flex; gap: 15px; align-items: center; }
+        .product-img { width: 50px; height: 40px; background: #f1f5f9; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #94a3b8; border: 1px solid #e2e8f0; }
+        .product-sku { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .product-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .product-specs { font-size: 12px; color: var(--text-muted); }
+
+        .pallet-info { font-size: 13px; color: var(--text-muted); }
+        .price-info { font-weight: 700; font-size: 15px; }
+
+        .add-controls { display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+        
+        .qty-stepper {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .qty-stepper button {
+            background: #fff; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold;
+        }
+        .qty-stepper button:hover { background: #f1f5f9; }
+        .qty-stepper input {
+            width: 40px; text-align: center; border: none; border-left: 1px solid var(--border); border-right: 1px solid var(--border); font-weight: 600;
+        }
+
+        .btn-add {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-add:hover { opacity: 0.9; }
+
+        .btn-add.stop-1 { background-color: var(--accent-stop1); }
+        .btn-add.stop-2 { background-color: var(--accent-stop2); }
+        .btn-add.stop-3 { background-color: var(--accent-stop3); }
+
+        /* --- TRUCK LAYOUT GRID --- */
+        .truck-layout {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pallet-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .pallet-slot {
+            aspect-ratio: 1 / 1.1;
+            border: 1px dashed #cbd5e1;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #cbd5e1;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        .pallet-slot.drag-over {
+            background: #e2e8f0;
+            border: 2px dashed #94a3b8;
+            transform: scale(1.05);
+        }
+
+        .pallet-filled {
+            border-style: solid;
+            color: white;
+            font-weight: 700;
+            cursor: grab;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pallet-filled:active { cursor: grabbing; }
+
+        .pallet-filled[data-stop="1"] { background-color: var(--accent-stop1); border-color: #92400e; }
+        .pallet-filled[data-stop="2"] { background-color: var(--accent-stop2); border-color: #065f46; }
+        .pallet-filled[data-stop="3"] { background-color: var(--accent-stop3); border-color: #1e3a8a; }
+
+        .pallet-filled .s-label { font-size: 10px; opacity: 0.8; margin-bottom: 2px; }
+        .pallet-filled .sku-label { font-size: 12px; text-align: center; line-height: 1.2; }
+
+        .btn-clear {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-clear:hover { background: #f1f5f9; }
+
+        /* --- MANIFEST --- */
+        .manifest-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .manifest-stop { border-bottom: 1px solid var(--border); }
+        .manifest-stop-header {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .stop-number-circle {
+            width: 24px; height: 24px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;
+        }
+        .stop-number-circle[data-stop="1"] { background: var(--accent-stop1); }
+        .stop-number-circle[data-stop="2"] { background: var(--accent-stop2); }
+        .stop-number-circle[data-stop="3"] { background: var(--accent-stop3); }
+
+        .manifest-stop-info { flex: 1; }
+        .manifest-stop-info strong { display: block; font-size: 13.5px; }
+        .manifest-stop-info span { font-size: 11px; color: var(--text-muted); }
+        
+        .manifest-stop-stats { text-align: right; font-size: 12px; font-weight: 600; }
+        .manifest-stop-stats span { display: block; font-size: 11px; color: var(--text-muted); font-weight: 400; }
+
+        .manifest-item {
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--border);
+        }
+        .manifest-item:last-child { border-bottom: none; }
+        
+        .manifest-item-desc strong { display: block; font-size: 13px; margin-bottom: 2px; }
+        .manifest-item-desc span { font-size: 12px; color: var(--text-muted); }
+
+        .manifest-subtotal {
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .empty-state { padding: 30px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic; }
+
+        /* =====================================================================
+           CHECKOUT MODAL (MATCHING SCREENSHOT)
+        ===================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            width: 760px;
+            max-width: 95%;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-content {
+            padding: 32px 36px 24px 36px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-tag {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .modal-meta-line {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .form-group-po {
+            margin-bottom: 26px;
+        }
+        .form-group-po label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+        .form-group-po label span { color: var(--danger); }
+        
+        .po-input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            font-family: inherit;
+        }
+        .po-input:focus {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+        }
+        .po-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .section-breakdown-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        .checkout-stop-box {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            background: #ffffff;
+        }
+
+        .stop-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .stop-box-badge {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .stop-box-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+        .stop-box-address { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+        .stop-box-account { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+
+        .stop-box-metrics {
+            text-align: right;
+        }
+        .stop-box-price { font-size: 18px; font-weight: 800; color: #0f172a; }
+        .stop-box-summary { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        .stop-box-divider {
+            border-top: 1px dashed var(--border);
+            margin: 12px 0;
+        }
+
+        .stop-box-line-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+        .stop-box-line-item:last-child { margin-bottom: 0; }
+
+        /* Dark Total Strip */
+        .modal-total-strip {
+            background-color: var(--dark-header);
+            border-radius: 4px;
+            color: #ffffff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-top: 16px;
+            margin-bottom: 12px;
+        }
+        .modal-total-strip .amount {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .modal-dropship-note {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .modal-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 16px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-note { font-size: 12px; color: var(--text-muted); }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-modal-cancel {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 9px 18px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #334155;
+        }
+        .btn-modal-cancel:hover { background: #f8fafc; }
+
+        .btn-modal-submit {
+            background: #e2e8f0;
+            color: #94a3b8;
+            border: none;
+            padding: 9px 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: all 0.2s;
+        }
+        .btn-modal-submit.ready {
+            background: #111827;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .btn-modal-submit.ready:hover {
+            background: #000000;
+        }
+
+        /* Success Toast */
+        .order-success-banner {
+            position: fixed;
+            top: 20px;
+            right: 40px;
+            background: #065f46;
+            color: #ecfdf5;
+            padding: 16px 24px;
+            border-radius: 6px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10001;
+            display: none;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- STOPS ROUTING -->
+    <div class="stops-container" id="stops-container">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- TRUCK STATUS BAR -->
+    <div class="truck-status">
+        <div>
+            <div class="load-title">Your Truckload</div>
+            <div class="load-name">National Distribution Route</div>
+        </div>
+
+        <div class="progress-section">
+            <!-- Pallets Progress -->
+            <div class="progress-block">
+                <div class="progress-header">
+                    <span>PALLETS</span>
+                    <span id="pallet-text">0 / 14 <span style="font-size:10px; margin-left:4px;">min 12</span></span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="pallet-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-markers">
+                    <span>0</span><span>MIN</span><span>MAX</span>
+                </div>
+            </div>
+
+            <!-- Weight Progress -->
+            <div class="progress-block">
+                <div class="progress-header">
+                    <span>WEIGHT</span>
+                    <span id="weight-text">0 / 50,000 lb <span style="font-size:10px; margin-left:4px;">min 1 lb</span></span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="weight-fill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-markers">
+                    <span>MIN</span><span>MAX</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="value-block">
+            <div class="value-details">
+                <div class="value-label">Est. Truckload Value</div>
+                <div class="value-amount" id="total-value">$0</div>
+            </div>
+            <!-- CHECKOUT TRIGGER BUTTON -->
+            <button class="btn-checkout-trigger" id="checkout-btn" onclick="openCheckoutModal()" disabled>
+                Check out &rarr;
+            </button>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- LEFT: CATALOG -->
+        <div>
+            <div class="section-header">
+                <span>Step 3 &bull; Catalog</span>
+                <span style="font-weight: 400; text-transform: none;">Drag pallets on the right to organize your load</span>
+            </div>
+            
+            <div class="catalog">
+                <table class="catalog-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Pallet Specs</th>
+                            <th>Price</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="catalog-body">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RIGHT: LAYOUT & MANIFEST -->
+        <div>
+            <div class="section-header">
+                <span>Truck Layout</span>
+                <span id="layout-count">0 / 14 PL</span>
+            </div>
+            
+            <!-- DRAG & DROP GRID -->
+            <div class="truck-layout">
+                <div class="pallet-grid" id="pallet-grid">
+                    <!-- 14 slots rendered by JS -->
+                </div>
+                <button class="btn-clear" onclick="clearTruck()">&times; Clear Truck</button>
+            </div>
+
+            <div class="section-header">
+                <span>Truck Manifest</span>
+                <span style="font-weight: 400; text-transform: none;">Aggregated by Stop</span>
+            </div>
+
+            <div class="manifest-container" id="manifest-container">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =======================================================================
+     CHECKOUT MODAL (MATCHING SCREENSHOT)
+======================================================================== -->
+<div class="modal-overlay" id="checkout-modal-overlay">
+    <div class="modal-card">
+        <div class="modal-content">
+            <div class="modal-tag">Review &amp; Submit</div>
+            <div class="modal-title">Commercial Truckload Route Submission</div>
+            <div class="modal-meta-line" id="modal-meta-text">
+                Multi-Stop Enterprise Program &bull; Master Acct 850117130 &bull; Program Pricing
+            </div>
+
+            <!-- PO Number -->
+            <div class="form-group-po">
+                <label for="po-number-input">Your PO Number <span>*</span></label>
+                <input type="text" id="po-number-input" class="po-input" placeholder="e.g. 4500123987" oninput="checkPoValidity()">
+                <div class="po-hint">Travels to ERP on every order in this load and appears on your invoice.</div>
+            </div>
+
+            <!-- Sales Orders Generated Breakdown -->
+            <div class="section-breakdown-title" id="sales-orders-heading">
+                One Sales Order Will Be Created
+            </div>
+
+            <!-- Stop Containers (Populated by JS) -->
+            <div id="modal-stops-breakdown"></div>
+
+            <!-- Dark Total Strip -->
+            <div class="modal-total-strip">
+                <span id="modal-strip-stats">0 PALLETS &bull; 0 LB</span>
+                <span class="amount" id="modal-strip-total">$0</span>
+            </div>
+
+            <div class="modal-dropship-note">
+                Automated ERP Sync: System creates a sales order and routes pick-tickets to the designated servicing branches upon submission.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+            <div class="footer-note">Nothing is written until you submit</div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-modal-cancel" onclick="closeCheckoutModal()">Cancel</button>
+                <button type="button" class="btn-modal-submit" id="submit-order-btn" onclick="submitOrder()">Submit order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Confirmation Toast -->
+<div class="order-success-banner" id="order-success-toast">
+    &#10003; Order successfully submitted! Sales orders generated in ERP.
+</div>
+
+<script>
+    // --- STATE MANAGEMENT ---
+    const MAX_PALLETS = 14;
+    const MAX_WEIGHT = 50000;
+    const MIN_PALLETS = 1; // Can trigger checkout once pallets exist
+
+    // Available stops setup
+    const stops = [
+        { id: 1, name: "AJ's Small Engine Repair", address: "2021 Fm 1960 Bypass Rd E · Humble, TX 77338-3921", account: "Account 850117130", isActive: true, isPopulated: true },
+        { id: 2, name: "Industrial Fleet Services", address: "400 Logistics Blvd · Dallas, TX 75201-1102", account: "Account 850117131", isActive: false, isPopulated: true },
+        { id: 3, name: "Add delivery address", address: "Optional 3rd Stop", account: "Account 850117132", isActive: false, isPopulated: false }
+    ];
+
+    let currentStopId = 1;
+    let truckSlots = new Array(MAX_PALLETS).fill(null);
+
+    // Mock Catalog
+    const catalog = [
+        { sku: "31A-HD", name: "Industrial Group 31A Heavy Duty", specs: "12V • Flooded Lead-Acid", unitsPerPallet: 54, weight: 2854, price: 4932 },
+        { sku: "31A-XHD", name: "Industrial Group 31A Extra Heavy", specs: "12V • Flooded Lead-Acid", unitsPerPallet: 54, weight: 2988, price: 6350 },
+        { sku: "31S-AGM", name: "Industrial Group 31S AGM", specs: "12V • AGM Lead-Acid, Sealed", unitsPerPallet: 54, weight: 3834, price: 11836 },
+        { sku: "4D-COM", name: "Commercial 4D Tractor Battery", specs: "12V • Heavy Commercial", unitsPerPallet: 24, weight: 4100, price: 7200 }
+    ];
+
+    function init() {
+        renderStops();
+        renderCatalog();
+        renderGrid();
+        updateManifestAndProgress();
+    }
+
+    // --- STOPS RENDERING ---
+    function renderStops() {
+        const container = document.getElementById('stops-container');
+        container.innerHTML = stops.map(stop => {
+            if (stop.isPopulated) {
+                return `
+                    <div class="stop-card populated ${stop.isActive ? 'active' : ''}" data-stop="${stop.id}" onclick="setActiveStop(${stop.id})">
+                        <div class="stop-header-badge">Stop ${stop.id} ${stop.isActive ? ' (Routing Here)' : ''}</div>
+                        <div class="stop-name">${stop.name}</div>
+                        <div class="stop-address">${stop.address}</div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="stop-card ${stop.isActive ? 'active' : ''}" data-stop="${stop.id}" onclick="setActiveStop(${stop.id})">
+                        <div class="add-stop-circle">+</div>
+                        <div class="stop-name">Stop ${stop.id}</div>
+                        <div class="stop-address">${stop.name}</div>
+                    </div>
+                `;
+            }
+        }).join('');
+        renderCatalog();
+    }
+
+    function setActiveStop(id) {
+        stops.forEach(s => s.isActive = (s.id === id));
+        currentStopId = id;
+        
+        const target = stops.find(s => s.id === id);
+        if(!target.isPopulated) {
+            target.name = "Regional Distribution Center";
+            target.address = "100 Warehouse Way · Austin, TX 78701-4401";
+            target.isPopulated = true;
+        }
+
+        renderStops();
+    }
+
+    // --- CATALOG RENDERING ---
+    function renderCatalog() {
+        const tbody = document.getElementById('catalog-body');
+        tbody.innerHTML = catalog.map((prod, index) => `
+            <tr>
+                <td>
+                    <div class="product-info">
+                        <div class="product-img">IMG</div>
+                        <div>
+                            <div class="product-sku">${prod.sku}</div>
+                            <div class="product-name">${prod.name}</div>
+                            <div class="product-specs">${prod.specs}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="pallet-info">
+                        <div>1 PL = ${prod.unitsPerPallet} EA</div>
+                        <div>${prod.weight.toLocaleString()} lb</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="price-info">$${prod.price.toLocaleString()} <span style="font-size:11px; color:#64748b; font-weight:400;">/ PL</span></div>
+                </td>
+                <td>
+                    <div class="add-controls">
+                        <div class="qty-stepper">
+                            <button onclick="changeQty('qty-${index}', -1)">-</button>
+                            <input type="text" id="qty-${index}" value="1" readonly>
+                            <button onclick="changeQty('qty-${index}', 1)">+</button>
+                        </div>
+                        <button class="btn-add stop-${currentStopId}" onclick="addToTruck(${index})">
+                            + Add to Stop ${currentStopId}
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function changeQty(id, delta) {
+        const input = document.getElementById(id);
+        let val = parseInt(input.value) + delta;
+        if (val < 1) val = 1;
+        input.value = val;
+    }
+
+    // --- ADD TO TRUCK LOGIC ---
+    function addToTruck(catalogIndex) {
+        const product = catalog[catalogIndex];
+        const qty = parseInt(document.getElementById(`qty-${catalogIndex}`).value);
+        
+        let addedCount = 0;
+        for (let i = 0; i < MAX_PALLETS && addedCount < qty; i++) {
+            if (truckSlots[i] === null) {
+                truckSlots[i] = {
+                    sku: product.sku,
+                    name: product.name,
+                    weight: product.weight,
+                    price: product.price,
+                    unitsPerPallet: product.unitsPerPallet,
+                    stopId: currentStopId
+                };
+                addedCount++;
+            }
+        }
+
+        if (addedCount < qty) {
+            alert(`Truck capacity reached! Added ${addedCount} of ${qty} pallets.`);
+        }
+
+        renderGrid();
+        updateManifestAndProgress();
+    }
+
+    // --- RENDER TRUCK GRID ---
+    function renderGrid() {
+        const grid = document.getElementById('pallet-grid');
+        grid.innerHTML = truckSlots.map((slot, index) => {
+            if (slot) {
+                return `
+                    <div class="pallet-slot pallet-filled" 
+                         data-stop="${slot.stopId}" 
+                         data-index="${index}" 
+                         draggable="true"
+                         ondragstart="drag(event)" 
+                         ondragover="allowDrop(event)" 
+                         ondrop="drop(event)"
+                         ondragenter="dragEnter(event)"
+                         ondragleave="dragLeave(event)">
+                        <div class="s-label">S${slot.stopId}</div>
+                        <div class="sku-label">${slot.sku}</div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="pallet-slot" 
+                         data-index="${index}" 
+                         ondragover="allowDrop(event)" 
+                         ondrop="drop(event)"
+                         ondragenter="dragEnter(event)"
+                         ondragleave="dragLeave(event)">
+                        ${index + 1}
+                    </div>
+                `;
+            }
+        }).join('');
+    }
+
+    function clearTruck() {
+        truckSlots = new Array(MAX_PALLETS).fill(null);
+        renderGrid();
+        updateManifestAndProgress();
+    }
+
+    // --- HTML5 DRAG & DROP ---
+    function allowDrop(ev) { ev.preventDefault(); }
+    function dragEnter(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+    function dragLeave(ev) { ev.currentTarget.classList.remove('drag-over'); }
+    function drag(ev) {
+        ev.dataTransfer.setData("sourceIndex", ev.currentTarget.dataset.index);
+        ev.dataTransfer.effectAllowed = "move";
+    }
+    function drop(ev) {
+        ev.preventDefault();
+        ev.currentTarget.classList.remove('drag-over');
+        
+        const sourceIndex = parseInt(ev.dataTransfer.getData("sourceIndex"));
+        const targetIndex = parseInt(ev.currentTarget.dataset.index);
+        if (sourceIndex === targetIndex || isNaN(sourceIndex)) return;
+
+        const temp = truckSlots[targetIndex];
+        truckSlots[targetIndex] = truckSlots[sourceIndex];
+        truckSlots[sourceIndex] = temp;
+
+        renderGrid();
+        updateManifestAndProgress();
+    }
+
+    // --- PROGRESS & MANIFEST ---
+    function getAggregatedData() {
+        let totalPallets = 0;
+        let totalWeight = 0;
+        let totalValue = 0;
+        const manifestData = {};
+
+        truckSlots.forEach(slot => {
+            if (slot !== null) {
+                totalPallets++;
+                totalWeight += slot.weight;
+                totalValue += slot.price;
+
+                if (!manifestData[slot.stopId]) {
+                    manifestData[slot.stopId] = {
+                        stopInfo: stops.find(s => s.id === slot.stopId),
+                        totalPallets: 0,
+                        totalWeight: 0,
+                        totalValue: 0,
+                        items: {}
+                    };
+                }
+
+                const stopGroup = manifestData[slot.stopId];
+                stopGroup.totalPallets++;
+                stopGroup.totalWeight += slot.weight;
+                stopGroup.totalValue += slot.price;
+
+                if (!stopGroup.items[slot.sku]) {
+                    stopGroup.items[slot.sku] = {
+                        name: slot.name,
+                        price: slot.price,
+                        weight: slot.weight,
+                        unitsPerPallet: slot.unitsPerPallet,
+                        count: 0
+                    };
+                }
+                stopGroup.items[slot.sku].count++;
+            }
+        });
+
+        return { totalPallets, totalWeight, totalValue, manifestData };
+    }
+
+    function updateManifestAndProgress() {
+        const { totalPallets, totalWeight, totalValue, manifestData } = getAggregatedData();
+
+        // Header Stats
+        document.getElementById('layout-count').innerText = `${totalPallets} / ${MAX_PALLETS} PL`;
+        document.getElementById('pallet-text').innerHTML = `${totalPallets} / ${MAX_PALLETS} <span style="font-size:10px; margin-left:4px;">min 12</span>`;
+        document.getElementById('weight-text').innerHTML = `${totalWeight.toLocaleString()} / ${MAX_WEIGHT.toLocaleString()} lb <span style="font-size:10px; margin-left:4px;">min 1 lb</span>`;
+        document.getElementById('total-value').innerText = `$${totalValue.toLocaleString()}`;
+
+        // Progress bar fills
+        document.getElementById('pallet-fill').style.width = `${(totalPallets / MAX_PALLETS) * 100}%`;
+        document.getElementById('weight-fill').style.width = `${(totalWeight / MAX_WEIGHT) * 100}%`;
+
+        // Bar colors: turns green when >= 12 pallets
+        if (totalPallets >= 12) {
+            document.getElementById('pallet-fill').style.backgroundColor = "var(--progress-green)";
+        } else {
+            document.getElementById('pallet-fill').style.backgroundColor = "var(--progress-yellow)";
+        }
+
+        // Enable/Disable Checkout Button
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (totalPallets >= MIN_PALLETS) {
+            checkoutBtn.disabled = false;
+        } else {
+            checkoutBtn.disabled = true;
+        }
+
+        // Render Manifest Sidebar
+        const manifestContainer = document.getElementById('manifest-container');
+        if (Object.keys(manifestData).length === 0) {
+            manifestContainer.innerHTML = `<div class="empty-state">Truck is empty. Add pallets from the catalog.</div>`;
+            return;
+        }
+
+        let html = '';
+        Object.keys(manifestData).sort().forEach(stopId => {
+            const data = manifestData[stopId];
+            let itemsHtml = Object.keys(data.items).map(sku => {
+                const item = data.items[sku];
+                const itemTotalWeight = item.weight * item.count;
+                const itemTotalPrice = item.price * item.count;
+                return `
+                    <div class="manifest-item">
+                        <div class="manifest-item-desc">
+                            <strong>${item.name}</strong>
+                            <span>${item.count} PL &times; $${item.price.toLocaleString()} • ${itemTotalWeight.toLocaleString()} lb</span>
+                        </div>
+                        <div style="font-weight: 700; font-size: 13px;">
+                            $${itemTotalPrice.toLocaleString()}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            html += `
+                <div class="manifest-stop">
+                    <div class="manifest-stop-header">
+                        <div class="stop-number-circle" data-stop="${stopId}">${stopId}</div>
+                        <div class="manifest-stop-info">
+                            <strong>${data.stopInfo.name}</strong>
+                            <span>${data.stopInfo.address}</span>
+                        </div>
+                        <div class="manifest-stop-stats">
+                            ${data.totalPallets} PL
+                            <span>${data.totalWeight.toLocaleString()} lb</span>
+                        </div>
+                    </div>
+                    ${itemsHtml}
+                    <div class="manifest-subtotal">
+                        <span>Stop ${stopId} Subtotal</span>
+                        <span>$${data.totalValue.toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        manifestContainer.innerHTML = html;
+    }
+
+    // =========================================================================
+    // CHECKOUT MODAL LOGIC (EXACTLY MATCHING SCREENSHOT)
+    // =========================================================================
+    function openCheckoutModal() {
+        const { totalPallets, totalWeight, totalValue, manifestData } = getAggregatedData();
+        if (totalPallets === 0) return;
+
+        const stopCount = Object.keys(manifestData).length;
+        const numberWords = ["ZERO", "ONE", "TWO", "THREE"];
+        document.getElementById('sales-orders-heading').innerText = 
+            `${numberWords[stopCount] || stopCount} SALES ORDER${stopCount > 1 ? 'S' : ''} WILL BE CREATED`;
+
+        // Render stop review cards
+        const container = document.getElementById('modal-stops-breakdown');
+        container.innerHTML = Object.keys(manifestData).sort().map(stopId => {
+            const data = manifestData[stopId];
+            
+            // Build item lines
+            const lineItemsHtml = Object.keys(data.items).map(sku => {
+                const item = data.items[sku];
+                const totalUnits = item.unitsPerPallet * item.count;
+                const unitPrice = (item.price / item.unitsPerPallet).toFixed(2);
+                const totalItemPrice = (item.price * item.count).toLocaleString();
+                return `
+                    <div class="stop-box-line-item">
+                        <span>${sku} &mdash; ${item.count} PL (${totalUnits.toLocaleString()} EA)</span>
+                        <span>${totalUnits.toLocaleString()} &times; $${unitPrice} = $${totalItemPrice}</span>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="checkout-stop-box">
+                    <div class="stop-box-header">
+                        <div>
+                            <div class="stop-box-badge">Stop ${stopId}</div>
+                            <div class="stop-box-name">${data.stopInfo.name}</div>
+                            <div class="stop-box-address">${data.stopInfo.address}</div>
+                            <div class="stop-box-account">${data.stopInfo.account}</div>
+                        </div>
+                        <div class="stop-box-metrics">
+                            <div class="stop-box-price">$${data.totalValue.toLocaleString()}</div>
+                            <div class="stop-box-summary">${data.totalPallets} PL &bull; ${data.totalWeight.toLocaleString()} lb</div>
+                        </div>
+                    </div>
+                    <div class="stop-box-divider"></div>
+                    <div>
+                        ${lineItemsHtml}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Populate bottom dark total strip
+        document.getElementById('modal-strip-stats').innerText = 
+            `${totalPallets} PALLETS \u2022 ${totalWeight.toLocaleString()} LB`;
+        document.getElementById('modal-strip-total').innerText = 
+            `$${totalValue.toLocaleString()}`;
+
+        // Reset inputs
+        document.getElementById('po-number-input').value = '';
+        checkPoValidity();
+
+        // Show modal
+        document.getElementById('checkout-modal-overlay').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById('checkout-modal-overlay').style.display = 'none';
+    }
+
+    function checkPoValidity() {
+        const poVal = document.getElementById('po-number-input').value.trim();
+        const submitBtn = document.getElementById('submit-order-btn');
+        if (poVal.length > 0) {
+            submitBtn.classList.add('ready');
+        } else {
+            submitBtn.classList.remove('ready');
+        }
+    }
+
+    function submitOrder() {
+        const poVal = document.getElementById('po-number-input').value.trim();
+        if (!poVal) {
+            alert("Please enter a valid Purchase Order (PO) number.");
+            document.getElementById('po-number-input').focus();
+            return;
+        }
+
+        // Close modal
+        closeCheckoutModal();
+
+        // Show success toast
+        const toast = document.getElementById('order-success-toast');
+        toast.innerHTML = `&#10003; Order <strong>#PO-${poVal}</strong> submitted! Sales orders synced with ERP.`;
+        toast.style.display = 'block';
+
+        // Clear truck for next load
+        clearTruck();
+
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3500);
+    }
+
+    // Run
+    init();
+
+</script>
+</body>
+</html>
