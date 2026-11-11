@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blake Fowler-Braziel | Technical & Platforms Product Manager</title>
+    <title>Blake Fowler-Braziel | Technical &amp; Platforms Product Manager</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -16,6 +16,7 @@
             --badge-shipped: #059669;
             --badge-backlog: #b45309;
             --badge-spec: #0369a1;
+            --badge-prototype: #7c3aed;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -109,6 +110,7 @@
         }
         .badge-shipped { background-color: var(--badge-shipped); }
         .badge-backlog { background-color: var(--badge-backlog); }
+        .badge-prototype { background-color: var(--badge-prototype); }
 
         .roi-banner {
             font-size: 13.5px;
@@ -133,18 +135,11 @@
             border-radius: 0 4px 4px 0;
             margin-bottom: 16px;
         }
-        .priority-note {
-            background: rgba(245, 158, 11, 0.08);
-            border-left: 3px solid #f59e0b;
-            padding: 10px 14px;
-            font-size: 13px;
-            color: #fde68a;
-            border-radius: 0 4px 4px 0;
-            margin-bottom: 18px;
-        }
-        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: var(--accent);
             color: #0f172a;
             padding: 8px 16px;
@@ -152,7 +147,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 13px;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         .btn:hover { background: var(--accent-hover); }
         .btn-secondary {
@@ -161,6 +156,11 @@
             border: 1px solid var(--border);
         }
         .btn-secondary:hover { background: var(--border); }
+        .btn-primary-action {
+            background: #38bdf8;
+            color: #042f2e;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body>
@@ -211,9 +211,30 @@
             </ul>
         </div>
 
-        <div class="section-title" style="margin-top: 38px;">Validated Product Specs &amp; Systems Architecture</div>
+        <div class="section-title" style="margin-top: 38px;">Interactive Prototypes &amp; Technical Specifications</div>
 
-        <!-- Project 2: DoorDash B2B -->
+        <!-- Project 2: Core Pickup Request (Prototype & PRD) -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">B2B Core Pickup Request Digitization &amp; Reverse Logistics Architecture</div>
+                <span class="badge badge-prototype">Functional Prototype &bull; PRD</span>
+            </div>
+            <div class="roi-banner">Operational Value: Automates branch credit liability, eliminates manual paper manifests &amp; saves 10–12 min per request</div>
+            <p class="card-desc">
+                An end-to-end self-service reverse logistics workflow for commercial buyers to schedule used battery pickups, automatically queuing NetSuite Sales Orders with dedicated Analysis Codes to insulate E-Commerce P&L from branch-managed credit liabilities.
+            </p>
+            <ul class="specs-list">
+                <li><strong>Functional HTML/JS Portal Prototype:</strong> Built a complete, interactive client-side simulation demonstrating child ship-to location selection, 10-unit minimum threshold validation, live request ledger states, and an accurate NetSuite Credit Memo PDF viewer modal.</li>
+                <li><strong>E-Commerce P&L Protection:</strong> Formulated NetSuite routing using a dedicated non-inventory placeholder SKU (<code>pickup-only</code>) and custom Analysis Code (<code>ANALYSIS_CORE_SERVICE_ONLY</code>) to safeguard digital revenue reporting.</li>
+                <li><strong>Driver ION App &amp; Pick-Ticket Lifecycle:</strong> Automates warehouse dispatch slips and mobile driver collection logs, closing the loop with automated Phase 2 Credit Memo ingestion into the customer ledger.</li>
+            </ul>
+            <div class="btn-group">
+                <a href="coreRequest.html" class="btn btn-primary-action" target="_blank">🚀 Launch Interactive Prototype &rarr;</a>
+                <a href="coreproposal.html" class="btn btn-secondary" target="_blank">📄 View Technical PRD / Architecture &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Project 3: DoorDash B2B Hot-Shot -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">B2B DoorDash Hot-Shot Dispatch &amp; Multi-Location Mapping</div>
@@ -223,6 +244,59 @@
             <p class="card-desc">
                 A localized 45-minute dispatch engine designed to capture emergency wholesale orders and counter scheduled weekly competitor routes.
             </p>
+            <ul class="specs-list">
+                <li><strong>Address-Entity Branch Mapping:</strong> Extends Magento's address schema with <code>assigned_branch_source_code</code>, allowing enterprise buyers to toggle between distinct child locations and servicing branches in the header.</li>
+                <li><strong>Tiered Weight &amp; Courier Dispatch Matrix:</strong> Calibrated delivery logistics across Standard (0–100 lbs @ $20 sedan) and Heavy Express (101–300 lbs @ $40 pickup/van) tiers, operating on a 100% margin-retention flat pass-through model.</li>
+                <li><strong>Zero NetSuite API Overhead:</strong> Leverages Adobe Commerce Multi-Source Inventory (MSI) to evaluate local branch inventory client-side on PLPs and search pages, preventing ERP concurrency rate limits.</li>
+            </ul>
             <div class="note-box">
                 <strong>Architecture Note:</strong> No custom UI prototype was required. The front-end framework already exists on our B2C platform ("My Store" selector); this specification extends the address entity and repurposes production UI assets for complex B2B multi-location hierarchies.
             </div>
+            <div class="btn-group">
+                <a href="DoordashB2B.html" class="btn btn-secondary" target="_blank">📄 View DoorDash Architecture Spec &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Project 4: NetSuite Delivery Route Architecture -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">NetSuite Automated Delivery Route &amp; Schedule Architecture</div>
+                <span class="badge badge-spec">Data Governance &bull; ERP Systems</span>
+            </div>
+            <div class="roi-banner">System Impact: 100% ERP data completeness, eliminates branch duplicate entry &amp; unlocks automated order cutoff rules</div>
+            <p class="card-desc">
+                An architectural discovery project that transformed a front-end delivery display request into an enterprise data governance solution, automating delivery schedules directly from servicing routes to eliminate compliance friction.
+            </p>
+            <ul class="specs-list">
+                <li><strong>Data Audit &amp; Strategic Pivot:</strong> Paused front-end portal UI development after auditing NetSuite records and identifying that Delivery Day fields were overwhelmingly blank due to redundant manual branch entry.</li>
+                <li><strong>Deterministic Field Auto-Population:</strong> Engineered a NetSuite Workflow and User Event Script (ON SAVE) mapping Servicing Routes deterministically to Delivery Days, achieving 100% data integrity with zero branch overhead.</li>
+                <li><strong>Downstream Dynamic Cutoffs:</strong> Exposed route data to Adobe Commerce to power automated 48-hour order window cutoffs and customer delivery visibility in "My Account".</li>
+            </ul>
+            <div class="btn-group">
+                <a href="netsuite_delivery_route_architecture.html" class="btn btn-secondary" target="_blank">📄 View Data Governance Brief &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Project 5: POS & Shop Management Connectors -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Pre-Built POS &amp; Shop Management Connectors (cXML / Webhooks)</div>
+                <span class="badge badge-spec">Strategic Integration Spec</span>
+            </div>
+            <div class="roi-banner">Strategic Impact: Compresses onboarding from 8–12 weeks to 1–2 weeks &amp; maximizes customer switching costs</div>
+            <p class="card-desc">
+                A strategic integration blueprint positioning the Adobe Commerce B2B layer as the default integration gateway for regional dealers and fleet procurement networks over rigid direct-to-ERP EDI.
+            </p>
+            <ul class="specs-list">
+                <li><strong>Bypassing Heavy EDI Friction:</strong> Replaces custom 8-to-12-week NetSuite EDI mappings with standardized REST APIs and webhooks for popular dealer shop software (QuickBooks, Lightspeed, CDK Global).</li>
+                <li><strong>cXML PunchOut for Enterprise Fleets:</strong> Enables large commercial buyers using e-procurement platforms (SAP Ariba, Coupa) to browse live negotiated catalog pricing and return approved carts seamlessly.</li>
+                <li><strong>Maximizing Account Switching Costs:</strong> Embedded automated purchase order generation directly into daily parts-ordering workflows, solidifying dealer retention and unifying order tracking under a single portal dashboard.</li>
+            </ul>
+            <div class="btn-group">
+                <a href="pos_cxml_connectors_specification.html" class="btn btn-secondary" target="_blank">📄 View Integration Architecture &rarr;</a>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
