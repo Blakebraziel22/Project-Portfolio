@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Architecture Specification: B2B Multi-Stop Truckload Builder & App Builder Decoupling</title>
+    <style>
+        :root {
+            --primary-accent: #0284c7;
+            --dark-header: #111827;
+            --secondary-dark: #1f2937;
+            --success: #059669;
+            --warning: #d97706;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-dark);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .proposal-container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
+            padding: 50px;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-accent);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark-header);
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 13px;
+            color: var(--primary-accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .doc-type {
+            background-color: var(--secondary-dark);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: var(--dark-header);
+            margin-top: 0;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .meta-strip {
+            background: #f1f5f9;
+            border-left: 4px solid var(--primary-accent);
+            padding: 16px 20px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 35px;
+            font-size: 14px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .meta-item strong {
+            display: block;
+            color: var(--dark-header);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-item span {
+            color: #334155;
+            font-size: 13.5px;
+        }
+
+        .executive-summary {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 22px 26px;
+            border-radius: 6px;
+            margin-bottom: 35px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        h2 {
+            font-size: 19px;
+            color: var(--dark-header);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 18px;
+        }
+
+        p, li {
+            font-size: 14.5px;
+            color: #334155;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .tech-card {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-accent);
+            border-radius: 4px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .tech-card h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--dark-header);
+            margin-bottom: 10px;
+        }
+
+        .highlight-card {
+            background-color: #f0fdf4;
+            border-left-color: var(--success);
+        }
+
+        .highlight-card h3 {
+            color: #065f46;
+        }
+
+        .flow-diagram {
+            background: #0f172a;
+            color: #f8fafc;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12.5px;
+            padding: 22px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 22px 0;
+            line-height: 1.5;
+            white-space: pre;
+        }
+
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 30px 0;
+            font-size: 14px;
+        }
+
+        .tier-table th {
+            background-color: var(--secondary-dark);
+            color: #ffffff;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #ffffff;
+            vertical-align: top;
+        }
+
+        .tier-table tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .metric-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .footer-note {
+            margin-top: 45px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="proposal-container">
+        <!-- Header -->
+        <div class="header-bar">
+            <div>
+                <div class="brand-title">Enterprise B2B Commerce Platform</div>
+                <div class="brand-subtitle">Platform Modernization &amp; Architecture Brief</div>
+            </div>
+            <div class="doc-type">Strategic PRD &bull; Systems Architecture</div>
+        </div>
+
+        <!-- Title -->
+        <h1>B2B Multi-Stop Truckload Builder: Composable App Builder Architecture &amp; ERP Drop-Ship Automation</h1>
+
+        <!-- Metadata Strip -->
+        <div class="meta-strip">
+            <div class="meta-item">
+                <strong>Initiative Origin</strong>
+                <span>VP of Operations Discovery Loop</span>
+            </div>
+            <div class="meta-item">
+                <strong>Discovery Spike</strong>
+                <span>72-Hour Feasibility &amp; ROI Architecture</span>
+            </div>
+            <div class="meta-item">
+                <strong>Architecture Framework</strong>
+                <span>Adobe App Builder (Micro-App Pilot)</span>
+            </div>
+            <div class="meta-item">
+                <strong>ERP Target</strong>
+                <span>NetSuite Drop-Ship SO-to-PO Automation</span>
+            </div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <strong>Executive Summary:</strong> Initiated through an operational discovery loop led by the VP of Operations, this project automates what was slated to be a high-friction, manual ordering process for a new wholesale truckload and container purchasing program. Rather than subjecting heavy wholesale buyers to a phone/email workflow or an inflexible off-the-shelf checkout, this architecture repurposes the existing B2B reorder pad component into an interactive 14-pallet trailer capacity engine. 
+            <br><br>
+            Crucially, this initiative serves as the enterprise's flagship pilot for <strong>Adobe App Builder</strong>, decoupling custom commercial front-end experiences from the core monolithic commerce installation. By isolating deployment into an independent serverless runtime, this pattern cuts future development go-live cycles by <strong>50%</strong>, reduces potential production downtime by up to <strong>80%</strong>, and closes the operational loop via NetSuite drop-ship Sales-Order-to-Purchase-Order (SO-to-PO) automation.
+        </div>
+
+        <!-- 1. Discovery Loop & Feasibility -->
+        <h2>1. The 72-Hour Discovery Loop &amp; Strategic Feasibility</h2>
+        <p>
+            When Operations introduced the volume truckload program, the baseline plan relied on manual order intake: branch reps and sales operations capturing multi-stop destination drops, checking pallet-tier price sheets, verifying axle weight constraints, and manually generating sales orders.
+        </p>
+        <p>
+            Asked whether the digital B2B portal could abstract this operational overhead, the immediate product challenge was balancing delivery velocity against platform technical debt:
+        </p>
+        <ul>
+            <li><strong>The 72-Hour Technical Spike:</strong> Conducted an architectural audit across Adobe Commerce and NetSuite schemas to evaluate whether building bespoke monolithic controllers was justifiable against ongoing maintenance overhead.</li>
+            <li><strong>Re-purposing Proven UI Frameworks:</strong> Rather than drafting a greenfield UI from scratch, the architecture targeted our existing, battle-tested <em>Reorder Pad</em> iframe framework. This component already maintained the required customer-pricing resolution logic, tiered SKU representation, and quantity stepping mechanics.</li>
+            <li><strong>Checkout Path Bypass:</strong> Standard multi-step e-commerce checkouts (cart &rarr; shipping &rarr; billing &rarr; payment review) are fundamentally incompatible with $80,000+ commercial truckloads. The architecture was designed to bypass the standard cart entirely, writing customer commitments directly into the order tables upon review modal verification.</li>
+        </ul>
+
+        <!-- 2. Adobe App Builder Modernization -->
+        <h2>2. Strategic Platform Modernization: The App Builder Pilot</h2>
+        <div class="tech-card highlight-card">
+            <h3>Decoupling Custom Development from the Commerce Monolith</h3>
+            <p>
+                Historically, enterprise customizations were integrated directly into the core monolithic codebase. This created cascading dependencies, extensive regression QA burdens, and deployment risks where a defect in a specialized B2B feature could compromise primary storefront checkout stability.
+            </p>
+            <p>
+                The Truckload Builder is our pioneer deployment of <strong>Adobe App Builder</strong> (cloud-native serverless extensibility), establishing an organizational blueprint for all future custom commerce capabilities:
+            </p>
+            <ul>
+                <li><strong>50% Acceleration in Go-Live Velocity:</strong> Development, iteration, and deployment occur within an isolated App Builder runtime. Engineering teams go from concept to production without waiting on bi-weekly monolithic build and release trains.</li>
+                <li><strong>Up to 80% Reduction in Production Downtime &amp; Outage Risk:</strong> Defect blast radius is fully contained. Because code runs in an isolated containerized environment, an edge-case runtime exception in the truckload module cannot corrupt or bring down the primary commerce storefront.</li>
+                <li><strong>Dramatically Compressed QA &amp; Regression Cycles:</strong> Testing is strictly localized to the single App Builder instance and its discrete API contracts. This eliminates the requirement for sitewide end-to-end regression sweeps and complex monolithic A/B test verifications.</li>
+            </ul>
+        </div>
+
+        <!-- 3. Two-Tier App Builder Architecture -->
+        <h2>3. Two-Tier App Builder Architecture &amp; System Flow</h2>
+        <p>
+            The system employs a decoupled, two-tier micro-application model ensuring front-end speed while centralizing backend governance and authentication:
+        </p>
+        <div class="tech-card">
+            <h3>Tier 1: Client-Side Interactive Spatial Builder (App Builder Instance 1)</h3>
+            <p>
+                Renders directly in the browser via an authenticated customer session. It handles the interactive 14-slot trailer canvas, HTML5 drag-and-drop pallet repositioning, live 50,000 lb gross weight calculation, minimum order gating (12/14 pallets), and multi-stop payload distribution.
+            </p>
+        </div>
+        <div class="tech-card">
+            <h3>Tier 2: The Enterprise ERP Gatekeeper Proxy (App Builder Instance 2)</h3>
+            <p>
+                Acts as the single, authenticated gateway between commercial storefront events and the core ERP infrastructure. All outbound order payloads from Instance 1 terminate at the Gatekeeper, which validates payload schemas, enforces token-bucket concurrency limits, verifies authorization tokens, and writes clean transaction records into the ERP pipeline.
+            </p>
+        </div>
+
+        <!-- Architectural Diagram -->
+        <div class="flow-diagram">
+[Commercial Buyer Logs In] ──> [Magento Evaluates Customer Attribute: is_truckload_eligible]
+                                              │
+                       ┌──────────────────────┴──────────────────────┐
+                       ▼                                             ▼
+             [Attribute == False]                           [Attribute == True]
+             Standard Storefront Nav                        Mounts App Builder Instance 1 Link
+                                                            (Header &amp; "My Account" Dashboard)
+                                                                     │
+                                                                     ▼
+                                                   [Interactive 14-Pallet Trailer UI]
+                                                   - 1-to-3 Multi-Stop Address Routing
+                                                   - Live Weight (50k lb) &amp; Pallet Gauges
+                                                   - Real-Time HTML5 Drag-and-Drop Reorder
+                                                                     │
+                                                                     ▼
+                                                   [Review &amp; Submit Modal (PO Number)]
+                                                   - Bypasses Standard Cart/Checkout
+                                                   - Dispatches Order Payload
+                                                                     │
+                                                                     ▼
+                                                   [App Builder Instance 2: ERP Gatekeeper]
+                                                   - Centralized Auth &amp; Rate Limit Throttling
+                                                   - Ingests &amp; Validates Multi-Stop Payload
+                                                                     │
+                                                                     ▼
+                                                   [Direct Injection to Magento Order Table]
+                                                   - Creates Discrete Order Records per Stop
+                                                                     │
+                                                                     ▼
+                                                   [NetSuite Order Integration Sync]
+                                                   - Injects Custom Analysis Tag: ANALYSIS_TRUCKLOAD
+                                                   - Evaluates SKU-Level Drop-Ship Vendor Source
+                                                   - Automatically Generates Vendor PO for Factory Fulfillment
+        </div>
+
+        <!-- 4. Data Governance & NetSuite SO-to-PO Logic -->
+        <h2>4. Data Governance &amp; Automated Drop-Ship Fulfillment</h2>
+        <div class="tech-card">
+            <h3>Attribute-Based Storefront Access Control (ABAC)</h3>
+            <p>
+                Because wholesale truckload pricing and trailer dispatch are restricted to approved commercial accounts, access is governed dynamically. An extension attribute (<code>is_truckload_eligible</code>) on the customer entity flags whether the authenticated user has access. When valid, Magento dynamically populates navigation entry points on the homepage and within the <em>My Account</em> portal, securing program pricing behind authorization boundaries.
+            </p>
+        </div>
+
+        <div class="tech-card">
+            <h3>Financial P&amp;L Isolation via Custom Analysis Codes</h3>
+            <p>
+                Orders flowing through the truckload program represent multi-pallet, high-revenue transactions that bypass standard branch fulfillment fleets. To insulate regional branch operating metrics from direct-factory container shipments, all orders generated by the Gatekeeper automatically inherit a dedicated NetSuite <strong>Custom Analysis Code</strong>. This routes revenue and margin credit to the wholesale strategic program ledger, preventing P&amp;L skew across retail branch P&amp;Ls.
+            </p>
+        </div>
+
+        <div class="tech-card">
+            <h3>SKU-Level Drop-Ship Vendor Assignment &amp; Automated PO Generation</h3>
+            <p>
+                Truckload orders are fulfilled factory-direct by commercial battery manufacturers rather than our internal warehouse network. Built-in workflow logic in NetSuite automates the drop-ship lifecycle:
+            </p>
+            <ul>
+                <li><strong>Dynamic Vendor Resolution:</strong> When the Sales Order is ingested, NetSuite evaluates the lines against the preferred manufacturing supplier assigned at the SKU master level.</li>
+                <li><strong>Automated PO Creation:</strong> NetSuite automatically creates a corresponding Purchase Order linked directly to the parent Sales Order.</li>
+                <li><strong>Electronic Transmission:</strong> Order specifications, customer destination addresses (partitioned by stop), and shipping requirements dispatch automatically to the vendor's EDI/cXML ingestion queue, eliminating manual buyer intervention.</li>
+            </ul>
+        </div>
+
+        <div class="tech-card">
+            <h3>Dedicated "Truckload Orders" Self-Service Portal</h3>
+            <p>
+                To provide transparency for commercial purchasing agents managing multi-stop orders, a custom <strong>"Truckload Orders"</strong> ledger view was integrated into the customer portal. Buyers can track shipment statuses, review PDF invoices, verify multi-stop drop receipts, and reference the associated master PO number across all stops.
+            </p>
+        </div>
+
+        <!-- 5. Value Driver Matrix -->
+        <h2>5. Cross-Functional Impact &amp; Value Realization</h2>
+        <table class="tier-table">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">Stakeholder</th>
+                    <th style="width: 40%;">Operational Bottleneck (Pre-Fix)</th>
+                    <th style="width: 40%;">Automated Value (Post-Deployment)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Engineering &amp; IT</strong></td>
+                    <td>Monolithic release coupling, slow deployments, and extensive sitewide regression testing overhead.</td>
+                    <td><span class="metric-badge">50% Faster Go-Lives</span> and <span class="metric-badge">Up to 80% Downtime Reduction</span> via decoupled, fault-isolated App Builder micro-apps.</td>
+                </tr>
+                <tr>
+                    <td><strong>Operations &amp; Supply Chain</strong></td>
+                    <td>Manual telephone intake, paper load-planning spreadsheets, and manual carrier dispatch calculations.</td>
+                    <td>Automated 14-pallet capacity verification, live gross axle weight calculation, and programmatic supplier PO creation.</td>
+                </tr>
+                <tr>
+                    <td><strong>Sales Operations &amp; CX</strong></td>
+                    <td>Labor-intensive manual entry of multi-stop addresses, pricing verification, and split-order keying.</td>
+                    <td>Automated multi-order partitioning across up to 3 destinations, inheriting PO numbers across customer accounts.</td>
+                </tr>
+                <tr>
+                    <td><strong>Enterprise Buyers</strong></td>
+                    <td>Blind quoting cycles, friction when coordinating drop-ship locations, and lack of shipment visibility.</td>
+                    <td>Self-service spatial trailer planning, real-time volume pricing, and centralized tracking under a dedicated portal dashboard.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer-note">
+            Enterprise Architecture &bull; Technical Product Management Portfolio &bull; Confidential &amp; Proprietary
+        </div>
+    </div>
+
+</body>
+</html>
